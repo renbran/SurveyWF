@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAE Survey Company - End-to-End Process Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #1a1f4e 0%, #0d3b66 50%, #14555e 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid #00d4aa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,212,170,0.05) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            color: #00d4aa;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #8899bb;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* NAVIGATION TABS */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 20px;
+            background: #0d1230;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #1a2055;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            border: 1px solid #2a3070;
+            border-radius: 25px;
+            background: transparent;
+            color: #7788aa;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: linear-gradient(135deg, #00d4aa, #0088cc);
+            color: #fff;
+            border-color: #00d4aa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,212,170,0.3);
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* VIEW TOGGLE */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid #2a3070;
+            border-radius: 8px;
+            background: transparent;
+            color: #7788aa;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #1a2055;
+            color: #00d4aa;
+            border-color: #00d4aa;
+        }
+
+        /* SECTION */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8em;
+            color: #00d4aa;
+            margin: 30px 0 10px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #6677aa;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        /* ============ MASTER FLOW VIEW ============ */
+        .master-flow {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .flow-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #00d4aa, #0088cc, #6644cc, #00d4aa);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        .phase-block {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            z-index: 1;
+        }
+
+        .phase-block:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .phase-block:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .phase-block:nth-child(odd) .phase-card {
+            margin-right: auto;
+            margin-left: 20px;
+        }
+
+        .phase-block:nth-child(even) .phase-card {
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        .phase-card {
+            width: 45%;
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070;
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4aa, #0088cc);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .phase-card:hover::before,
+        .phase-card.expanded::before {
+            opacity: 1;
+        }
+
+        .phase-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,212,170,0.15);
+            border-color: #00d4aa44;
+        }
+
+        .phase-number {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            z-index: 2;
+            border: 3px solid;
+            transition: all 0.3s;
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .phase-icon {
+            font-size: 2em;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .phase-title {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .phase-duration {
+            font-size: 0.8em;
+            color: #00d4aa;
+            margin-top: 3px;
+        }
+
+        .phase-summary {
+            color: #8899bb;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .phase-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #2a3070;
+        }
+
+        .phase-card.expanded .phase-details {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-section {
+            margin-bottom: 15px;
+        }
+
+        .detail-section h4 {
+            color: #00d4aa;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detail-list li {
+            padding: 5px 0 5px 20px;
+            position: relative;
+            color: #99aabb;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+
+        .detail-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #00d4aa;
+        }
+
+        .role-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .role-sales { background: #1a3a2a; color: #44cc88; }
+        .role-surveyor { background: #1a2a3a; color: #4488cc; }
+        .role-cad { background: #2a1a3a; color: #8844cc; }
+        .role-qa { background: #3a2a1a; color: #cc8844; }
+        .role-admin { background: #3a1a1a; color: #cc4444; }
+        .role-manager { background: #1a3a3a; color: #44cccc; }
+
+        .expand-hint {
+            text-align: center;
+            color: #4466aa;
+            font-size: 0.8em;
+            margin-top: 8px;
+        }
+
+        /* ============ SWIMLANE VIEW ============ */
+        .swimlane-container {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        .swimlane-grid {
+            display: grid;
+            grid-template-columns: 150px repeat(10, 220px);
+            gap: 2px;
+            min-width: 2400px;
+        }
+
+        .swim-header {
+            background: linear-gradient(135deg, #00d4aa, #0088cc);
+            color: #fff;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.8em;
+            border-radius: 8px 8px 0 0;
+            position: sticky;
+            top: 70px;
+            z-index: 10;
+        }
+
+        .swim-role-header {
+            background: #131842;
+            border: 1px solid #2a3070;
+            padding: 12px 10px;
+            color: #00d4aa;
+            font-weight: 600;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+        }
+
+        .swim-cell {
+            background: #0d1230;
+            border: 1px solid #1a2050;
+            padding: 8px;
+            min-height: 80px;
+            position: relative;
+        }
+
+        .swim-task {
+            background: linear-gradient(145deg, #1a2055, #222870);
+            border: 1px solid #3a4090;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 4px 0;
+            font-size: 0.75em;
+            color: #ccd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .swim-task:hover {
+            transform: scale(1.02);
+            border-color: #00d4aa;
+            box-shadow: 0 2px 10px rgba(0,212,170,0.2);
+        }
+
+        .swim-task .task-name {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .swim-task .task-tool {
+            color: #00d4aa;
+            font-size: 0.9em;
+        }
+
+        /* ============ SERVICE COMPARISON VIEW ============ */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .service-card {
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: #00d4aa44;
+            box-shadow: 0 5px 20px rgba(0,212,170,0.1);
+        }
+
+        .service-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(0,136,204,0.1));
+            border-bottom: 1px solid #2a3070;
+        }
+
+        .service-card-header h3 {
+            color: #00d4aa;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .service-card-header p {
+            color: #6677aa;
+            font-size: 0.85em;
+        }
+
+        .service-steps {
+            padding: 15px 20px;
+        }
+
+        .service-step {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #1a2050;
+            align-items: flex-start;
+        }
+
+        .service-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4aa, #0088cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .step-info h4 {
+            color: #dde;
+            font-size: 0.9em;
+            margin-bottom: 3px;
+        }
+
+        .step-info p {
+            color: #6677aa;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+
+        /* ============ STATS BAR ============ */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #00d4aa44;
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 800;
+            color: #00d4aa;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6677aa;
+            font-size: 0.85em;
+        }
+
+        /* ============ LEGEND ============ */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            padding: 15px;
+            background: #0d1230;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8em;
+            color: #8899bb;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* ============ DOCUMENT OUTPUT TABLE ============ */
+        .output-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .output-table th {
+            background: linear-gradient(135deg, #1a2055, #222870);
+            color: #00d4aa;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .output-table td {
+            background: #0d1230;
+            padding: 12px 16px;
+            border-bottom: 1px solid #1a2050;
+            font-size: 0.85em;
+            color: #99aabb;
+        }
+
+        .output-table tr:hover td {
+            background: #131842;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-internal { background: #1a2a3a; color: #4488cc; }
+        .status-authority { background: #2a1a2a; color: #cc44aa; }
+        .status-client { background: #1a3a2a; color: #44cc88; }
+
+        /* ============ TOOLTIP ============ */
+        .tooltip {
+            position: fixed;
+            background: #1a2055;
+            border: 1px solid #00d4aa;
+            border-radius: 10px;
+            padding: 12px 16px;
+            max-width: 280px;
+            font-size: 0.8em;
+            color: #ccd;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .phase-block, .phase-block:nth-child(even) {
+                flex-direction: column !important;
+                align-items: center;
+            }
+            .phase-card,
+            .phase-block:nth-child(odd) .phase-card,
+            .phase-block:nth-child(even) .phase-card {
+                width: 95%;
+                margin: 0 auto;
+            }
+            .flow-line { display: none; }
+            .phase-number { display: none; }
+            .header h1 { font-size: 1.5em; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0e27; }
+        ::-webkit-scrollbar-thumb { background: #2a3070; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00d4aa; }
+
+        /* Arrow animation between phases */
+        .connector-arrow {
+            text-align: center;
+            color: #00d4aa;
+            font-size: 1.5em;
+            margin: -10px 0;
+            animation: bounceDown 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        /* ============ KPI / TIMELINE SECTION ============ */
+        .timeline-bar {
+            display: flex;
+            align-items: stretch;
+            gap: 4px;
+            margin: 20px 0;
+            height: 60px;
+        }
+
+        .timeline-phase {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.7em;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            padding: 4px;
+            cursor: default;
+            transition: opacity 0.2s;
+        }
+
+        .timeline-phase:hover { opacity: 0.85; }
+
+        /* ============ NOTES / INFO BOX ============ */
+        .info-box {
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border-left: 4px solid #00d4aa;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-size: 0.9em;
+            color: #99aabb;
+            line-height: 1.6;
+        }
+
+        .info-box strong { color: #00d4aa; }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            background: #0d1230;
+            border-top: 1px solid #1a2055;
+            padding: 30px 20px;
+            text-align: center;
+            color: #445577;
+            font-size: 0.85em;
+            margin-top: 60px;
+        }
+
+        .footer strong { color: #00d4aa; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🏗️ UAE Survey Company — End-to-End Process Flow</h1>
+        <p>Complete workflow visualization for companies like GeoEstate Survey Services</p>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showSection('overview')">📊 Overview</button>
+        <button class="nav-tab" onclick="showSection('masterflow')">🔄 Master Flow</button>
+        <button class="nav-tab" onclick="showSection('swimlane')">🏊 Swimlane View</button>
+        <button class="nav-tab" onclick="showSection('services')">📋 Service Types</button>
+        <button class="nav-tab" onclick="showSection('documents')">📄 Documents &amp; Outputs</button>
+    </div>
+
+    <div class="container">
+
+        <!-- ====== SECTION: OVERVIEW ====== -->
+        <div class="section active" id="sec-overview">
+            <h2 class="section-title">Industry Overview at a Glance</h2>
+            <p class="section-subtitle">Key metrics for a typical UAE survey company operation</p>
+
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">Core Process Phases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">6+</div>
+                    <div class="stat-label">Service Types Offered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Key Roles Involved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3–30</div>
+                    <div class="stat-label">Days per Project</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5+</div>
+                    <div class="stat-label">Authorities (DLD, ADM...)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">Document Types Generated</div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#44cc88"></div> Sales / BD Team</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#4488cc"></div> Field Surveyors</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#8844cc"></div> CAD / GIS Team</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#cc8844"></div> QA / Senior Surveyor</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#cc4444"></div> Admin / Registration</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#44cccc"></div> Project Manager</div>
+            </div>
+
+            <!-- TYPICAL PROJECT TIMELINE BAR -->
+            <h2 class="section-title" style="font-size:1.3em; margin-top:40px;">Typical Project Timeline (14-day project)</h2>
+            <div class="timeline-bar">
+                <div class="timeline-phase" style="flex:1; background:#44cc8866; border:1px solid #44cc88;" title="Day 1">Inquiry</div>
+                <div class="timeline-phase" style="flex:2; background:#44cc8866; border:1px solid #44cc88;" title="Day 1-2">Quote</div>
+                <div class="timeline-phase" style="flex:3; background:#cc444466; border:1px solid #cc4444;" title="Day 2-5">Docs</div>
+                <div class="timeline-phase" style="flex:2; background:#cc444466; border:1px solid #cc4444;" title="Day 5-6">App</div>
+                <div class="timeline-phase" style="flex:1; background:#4488cc66; border:1px solid #4488cc;" title="Day 6-7">Sched</div>
+                <div class="timeline-phase" style="flex:2; background:#4488cc66; border:1px solid #4488cc;" title="Day 7-8">Survey</div>
+                <div class="timeline-phase" style="flex:3; background:#8844cc66; border:1px solid #8844cc;" title="Day 8-11">CAD</div>
+                <div class="timeline-phase" style="flex:1; background:#cc884466; border:1px solid #cc8844;" title="Day 11-12">QA</div>
+                <div class="timeline-phase" style="flex:2; background:#cc444466; border:1px solid #cc4444;" title="Day 12-13">Submit</div>
+                <div class="timeline-phase" style="flex:1; background:#44cccc66; border:1px solid #44cccc;" title="Day 13-14">Deliver</div>
+            </div>
+
+            <!-- SIMPLIFIED HORIZONTAL FLOW -->
+            <h2 class="section-title" style="font-size:1.3em; margin-top:40px;">The Big Picture — 10 Phases</h2>
+            <p class="section-subtitle">Click on "Master Flow" tab above to see full details of each phase</p>
+
+            <div style="overflow-x:auto; padding:20px 0;">
+                <div style="display:flex; gap:8px; min-width:1200px; align-items:stretch;">
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #44cc88;">
+                        <div style="font-size:1.5em;">📞</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">1. CLIENT INQUIRY</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Lead capture &amp; qualification</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #44cc88;">
+                        <div style="font-size:1.5em;">📝</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">2. QUOTATION &amp; AGREEMENT</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Proposal, pricing, contract</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #cc4444;">
+                        <div style="font-size:1.5em;">📂</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">3. DOCUMENT COLLECTION</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Plans, NOCs, IDs, permits</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #cc4444;">
+                        <div style="font-size:1.5em;">🖥️</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">4. AUTHORITY APPLICATION</div>
+                        <div style="color:#6677aa; font-size:0.7em;">DLD/ADM portal submission</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #4488cc;">
+                        <div style="font-size:1.5em;">📍</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">5. SITE VISIT</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Scheduling &amp; field survey</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #4488cc;">
+                        <div style="font-size:1.5em;">📐</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">6. DATA COLLECTION</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Measurements &amp; field data</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #8844cc;">
+                        <div style="font-size:1.5em;">💻</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">7. OFFICE PROCESSING</div>
+                        <div style="color:#6677aa; font-size:0.7em;">CAD drafting &amp; report prep</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #cc8844;">
+                        <div style="font-size:1.5em;">✅</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">8. QA &amp; REVIEW</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Quality check &amp; validation</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #cc4444;">
+                        <div style="font-size:1.5em;">📤</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">9. AUTHORITY SUBMISSION</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Submit, follow-up, rectify</div>
+                    </div>
+                    <div style="display:flex;align-items:center;color:#00d4aa;font-size:1.2em;">→</div>
+                    <div style="flex:1; background:linear-gradient(145deg,#131842,#1a2055); border:1px solid #2a3070; border-radius:12px; padding:15px; text-align:center; border-top:3px solid #44cccc;">
+                        <div style="font-size:1.5em;">🏆</div>
+                        <div style="color:#fff; font-weight:700; font-size:0.8em; margin:8px 0;">10. APPROVAL &amp; DELIVERY</div>
+                        <div style="color:#6677aa; font-size:0.7em;">Certificate issuance &amp; handover</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SECTION: MASTER FLOW ====== -->
+        <div class="section" id="sec-masterflow">
+            <h2 class="section-title">Master Process Flow — Detailed</h2>
+            <p class="section-subtitle">Click any phase card to expand and see full details including roles, tools, inputs, outputs, and deliverables</p>
+
+            <div class="master-flow">
+                <div class="flow-line"></div>
+
+                <!-- PHASE 1 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">📞</div>
+                            <div>
+                                <div class="phase-title">Phase 1: Client Inquiry &amp; Lead Capture</div>
+                                <div class="phase-duration">⏱ Duration: 1–3 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            A developer, builder, architect, or property owner contacts the survey company requesting a specific service — Title Deed registration, Oqood, Third-Party Survey, etc.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-sales">Sales / BD</span>
+                                <span class="role-tag role-manager">Project Manager</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📥 Inputs</h4>
+                                <ul class="detail-list">
+                                    <li>Client inquiry via phone, email, WhatsApp, or walk-in</li>
+                                    <li>Basic project info: location, building type, number of units</li>
+                                    <li>Service type requested (Title Deed, Oqood, Third-Party, etc.)</li>
+                                    <li>Emirate (Dubai, Abu Dhabi, Ajman, RAK, UAQ)</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Log the lead in the system with client details</li>
+                                    <li>Identify the service type and scope of work</li>
+                                    <li>Initial assessment of project complexity</li>
+                                    <li>Check if client is a returning customer</li>
+                                    <li>Assign lead to appropriate sales person by emirate/service</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Qualified lead record with all basic project information</li>
+                                    <li>Initial scope understanding</li>
+                                    <li>Client contact record created</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>🛠 Tools Used</h4>
+                                <ul class="detail-list">
+                                    <li>CRM System / Phone / Email</li>
+                                    <li>WhatsApp (currently) → Odoo CRM (future)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#1a3a2a; border-color:#44cc88; color:#44cc88; top:30px;">1</div>
+                </div>
+
+                <!-- PHASE 2 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">📝</div>
+                            <div>
+                                <div class="phase-title">Phase 2: Quotation, Negotiation &amp; Agreement</div>
+                                <div class="phase-duration">⏱ Duration: 1–7 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            The sales team prepares a formal quotation based on the scope of work, number of units, building type, and emirate. After negotiation, both parties sign a contract or purchase order.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-sales">Sales / BD</span>
+                                <span class="role-tag role-manager">Project Manager</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📥 Inputs</h4>
+                                <ul class="detail-list">
+                                    <li>Qualified lead with scope details</li>
+                                    <li>Company rate card / pricing matrix per service</li>
+                                    <li>DLD fee schedule (AED 500 land, AED 600 unit, etc.)</li>
+                                    <li>Client's budget expectations</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Prepare formal quotation with line items per service</li>
+                                    <li>Include authority fees (DLD, ADM) breakdown</li>
+                                    <li>Define payment milestones (advance, on submission, on approval)</li>
+                                    <li>Negotiate terms with client</li>
+                                    <li>Prepare and sign engagement letter / contract / PO</li>
+                                    <li>Collect advance payment</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Signed quotation / contract</li>
+                                    <li>Confirmed Sale Order</li>
+                                    <li>Advance payment receipt</li>
+                                    <li>Project officially initiated</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>🛠 Tools Used</h4>
+                                <ul class="detail-list">
+                                    <li>Quotation template (Word/PDF) → Odoo Sales</li>
+                                    <li>Accounting system for payment → Odoo Invoicing</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#1a3a2a; border-color:#44cc88; color:#44cc88; top:30px;">2</div>
+                </div>
+
+                <!-- PHASE 3 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">📂</div>
+                            <div>
+                                <div class="phase-title">Phase 3: Document Collection &amp; Verification</div>
+                                <div class="phase-duration">⏱ Duration: 2–10 days (depends on client)</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            The admin/registration team collects all required documents from the client. This is often the biggest bottleneck — clients frequently delay providing documents, provide wrong versions, or miss items.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-admin">Admin / Registration</span>
+                                <span class="role-tag role-manager">Project Manager</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📥 Inputs Required (Typical for Title Deed/Oqood)</h4>
+                                <ul class="detail-list">
+                                    <li>Approved architectural plans (from Municipality/DM)</li>
+                                    <li>Building permit copy</li>
+                                    <li>Plot plan / Affection Plan from DLD</li>
+                                    <li>NOC (No Objection Certificate) from developer/authority</li>
+                                    <li>Owner's passport copy &amp; Emirates ID</li>
+                                    <li>Trade license of the developer</li>
+                                    <li>Power of Attorney (if applicable)</li>
+                                    <li>Previous survey reports (if any)</li>
+                                    <li>Completion certificate (for Title Deed)</li>
+                                    <li>SPA - Sale Purchase Agreement (for Oqood)</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Send document checklist to client</li>
+                                    <li>Receive and verify each document for completeness</li>
+                                    <li>Check document validity (NOC expiry, permit status)</li>
+                                    <li>Cross-verify architectural plans with plot information</li>
+                                    <li>Follow up with client for missing/incorrect documents</li>
+                                    <li>Organize and file documents in project folder</li>
+                                    <li>Mark project as "Documents Complete" when ready</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Complete document package verified and filed</li>
+                                    <li>Document verification checklist (signed off)</li>
+                                    <li>Project ready for authority application</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#3a1a1a; border-color:#cc4444; color:#cc4444; top:30px;">3</div>
+                </div>
+
+                <!-- PHASE 4 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">🖥️</div>
+                            <div>
+                                <div class="phase-title">Phase 4: Authority Application &amp; Registration</div>
+                                <div class="phase-duration">⏱ Duration: 1–3 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            The survey company submits a formal application through the relevant authority's portal (DLD Oqood Portal, ADM system, RAK portal). This step triggers the official process and assigns a reference number.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-admin">Admin / Registration</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Log in to the authority portal (DLD/ADM/RAK/DSO/DDA)</li>
+                                    <li>Create new survey application request</li>
+                                    <li>Upload all required documents to the portal</li>
+                                    <li>Pay authority application fees (AED 500–5000 depending on type)</li>
+                                    <li>Receive application reference number</li>
+                                    <li>Wait for authority review &amp; approval of application</li>
+                                    <li>Receive confirmation &amp; appointment for site visit (if DLD survey)</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Application reference number from authority</li>
+                                    <li>Payment receipt for authority fees</li>
+                                    <li>Confirmation of application acceptance</li>
+                                    <li>Scheduled site visit date (if applicable)</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>🏛 Authorities</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Dubai:</strong> DLD (Dubai Land Department), DDA, DSO, Trakhees</li>
+                                    <li><strong>Abu Dhabi:</strong> ADM (Abu Dhabi Municipality)</li>
+                                    <li><strong>RAK:</strong> RAK Land Department</li>
+                                    <li><strong>Ajman:</strong> Ajman DLD</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#3a1a1a; border-color:#cc4444; color:#cc4444; top:30px;">4</div>
+                </div>
+
+                <!-- PHASE 5 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">📍</div>
+                            <div>
+                                <div class="phase-title">Phase 5: Site Visit Scheduling &amp; Preparation</div>
+                                <div class="phase-duration">⏱ Duration: 1–3 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            Once the authority approves the application, a site visit must be scheduled. The project manager coordinates between the client (who must provide site access) and the field surveyor team.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-manager">Project Manager</span>
+                                <span class="role-tag role-surveyor">Field Surveyor</span>
+                                <span class="role-tag role-admin">Admin</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Coordinate with client for site access date and time</li>
+                                    <li>Check surveyor availability and schedule</li>
+                                    <li>Assign surveyor(s) based on emirate, expertise, and workload</li>
+                                    <li>Prepare site visit package: architectural plans, plot info, previous reports</li>
+                                    <li>Verify equipment availability: Total Station, GNSS, drone, etc.</li>
+                                    <li>Check out equipment from inventory</li>
+                                    <li>Brief surveyor on project specifics and special requirements</li>
+                                    <li>Plan route if multiple site visits are scheduled for the day</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Confirmed site visit appointment</li>
+                                    <li>Surveyor assignment with all project documents</li>
+                                    <li>Equipment checklist verified and checked out</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#1a2a3a; border-color:#4488cc; color:#4488cc; top:30px;">5</div>
+                </div>
+
+                <!-- PHASE 6 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">📐</div>
+                            <div>
+                                <div class="phase-title">Phase 6: Field Survey &amp; Data Collection</div>
+                                <div class="phase-duration">⏱ Duration: 0.5–3 days (per site)</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            This is the core technical work. Surveyors visit the site with professional instruments and capture precise measurements of the property, boundaries, building footprint, individual units, common areas, and elevation data.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-surveyor">Field Surveyor (Lead)</span>
+                                <span class="role-tag role-surveyor">Assistant Surveyor</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>🔧 Equipment Used</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Total Station:</strong> Precise angle and distance measurements</li>
+                                    <li><strong>GNSS/GPS Receiver:</strong> Georeferencing and control points</li>
+                                    <li><strong>Laser Distance Meter:</strong> Interior room dimensions</li>
+                                    <li><strong>Drone (UAV):</strong> Aerial mapping for large plots</li>
+                                    <li><strong>3D Laser Scanner:</strong> Complex building interiors</li>
+                                    <li><strong>Measuring Tape:</strong> Backup measurements</li>
+                                    <li><strong>Camera:</strong> Site photographs for documentation</li>
+                                    <li><strong>Field Book / Tablet:</strong> Recording raw data</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Establish control points using GNSS receiver</li>
+                                    <li>Set up Total Station and calibrate</li>
+                                    <li>Survey plot boundaries and verify against affection plan</li>
+                                    <li>Measure building footprint and setbacks from plot limits</li>
+                                    <li>Survey each floor: unit boundaries, walls, columns</li>
+                                    <li>Measure individual unit areas (rooms, bathrooms, balconies, terraces)</li>
+                                    <li>Survey common areas: corridors, lobbies, stairwells, elevators, etc.</li>
+                                    <li>Capture elevation data for topographical requirements</li>
+                                    <li>Take site photographs of all measured areas</li>
+                                    <li>Record raw field data in field book / tablet</li>
+                                    <li>Get client representative signature on site visit form</li>
+                                    <li>Check equipment back in on return to office</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Raw survey data (coordinates, angles, distances)</li>
+                                    <li>Site photographs (organized by floor/area)</li>
+                                    <li>Signed site visit confirmation form</li>
+                                    <li>Field notes and observations</li>
+                                    <li>GPS/GNSS coordinate data files</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#1a2a3a; border-color:#4488cc; color:#4488cc; top:30px;">6</div>
+                </div>
+
+                <!-- PHASE 7 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">💻</div>
+                            <div>
+                                <div class="phase-title">Phase 7: Office Processing, Drafting &amp; Report Preparation</div>
+                                <div class="phase-duration">⏱ Duration: 2–7 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            The raw field data is transferred to the CAD/GIS team who process it into professional survey drawings, area calculations, and reports. This is the most labor-intensive office phase.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-cad">CAD Draftsman</span>
+                                <span class="role-tag role-cad">GIS Specialist</span>
+                                <span class="role-tag role-surveyor">Senior Surveyor (guidance)</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>🛠 Software &amp; Tools Used</h4>
+                                <ul class="detail-list">
+                                    <li><strong>AutoCAD:</strong> 2D floor plans, boundary plans, section drawings</li>
+                                    <li><strong>AutoCAD Civil 3D:</strong> Topographical maps, contour generation</li>
+                                    <li><strong>ArcGIS / QGIS:</strong> Geospatial analysis and mapping</li>
+                                    <li><strong>Revit / BIM:</strong> 3D building models (if required)</li>
+                                    <li><strong>Trimble Business Center:</strong> GNSS data processing</li>
+                                    <li><strong>Excel:</strong> Area calculation spreadsheets</li>
+                                    <li><strong>3D Rendering Software:</strong> Color cut sheets</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Download and process raw survey data from instruments</li>
+                                    <li>Import data into AutoCAD / GIS software</li>
+                                    <li>Draft floor plans for each level with accurate dimensions</li>
+                                    <li>Calculate individual unit areas (GFA, BUA, sellable area)</li>
+                                    <li>Delineate common areas vs. private areas</li>
+                                    <li>Prepare boundary/plot plans with coordinates</li>
+                                    <li>Create area schedule tables</li>
+                                    <li>Prepare color cut sheets (rendered floor plans)</li>
+                                    <li>Generate As-Built drawings comparing actual vs. approved plans</li>
+                                    <li>Calculate FAR (Floor Area Ratio) for Third-Party Survey</li>
+                                    <li>Compile the survey report document</li>
+                                    <li>Format all drawings per authority template/standard</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs / Deliverables</h4>
+                                <ul class="detail-list">
+                                    <li>AutoCAD floor plans (per floor)</li>
+                                    <li>Area calculation schedules (per unit, per floor, total)</li>
+                                    <li>Plot/boundary plan with coordinates</li>
+                                    <li>Common area plan</li>
+                                    <li>Color cut sheets</li>
+                                    <li>As-Built drawings (if applicable)</li>
+                                    <li>Survey report document (Draft)</li>
+                                    <li>FAR calculation report (for Third-Party Survey)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#2a1a3a; border-color:#8844cc; color:#8844cc; top:30px;">7</div>
+                </div>
+
+                <!-- PHASE 8 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">✅</div>
+                            <div>
+                                <div class="phase-title">Phase 8: Quality Assurance &amp; Internal Review</div>
+                                <div class="phase-duration">⏱ Duration: 1–2 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            Before any submission to authorities, all deliverables go through a rigorous internal quality check by a senior surveyor or QA manager. Errors at this stage caught early prevent costly authority rejections.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-qa">QA / Senior Surveyor</span>
+                                <span class="role-tag role-manager">Project Manager</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Cross-check all area calculations against raw data</li>
+                                    <li>Verify drawing dimensions match field measurements</li>
+                                    <li>Ensure drawings comply with authority formatting standards</li>
+                                    <li>Check that plot boundaries match DLD affection plan</li>
+                                    <li>Validate unit numbering and nomenclature</li>
+                                    <li>Verify common area delineation is correct</li>
+                                    <li>Review survey report for completeness and accuracy</li>
+                                    <li>Check FAR compliance (for Third-Party Survey)</li>
+                                    <li>Approve or send back for correction with comments</li>
+                                    <li>Final sign-off on all deliverables</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>QA approval stamp / sign-off on all documents</li>
+                                    <li>Correction notes (if any) sent back to CAD team</li>
+                                    <li>Final approved survey package ready for submission</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#3a2a1a; border-color:#cc8844; color:#cc8844; top:30px;">8</div>
+                </div>
+
+                <!-- PHASE 9 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">📤</div>
+                            <div>
+                                <div class="phase-title">Phase 9: Authority Submission, Review &amp; Rectification</div>
+                                <div class="phase-duration">⏱ Duration: 3–15 days (authority dependent)</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            The final survey package is submitted to the relevant authority. The authority reviews the submission and may approve it directly or return it with comments requiring rectification. This loop can repeat multiple times.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-admin">Admin / Registration</span>
+                                <span class="role-tag role-manager">Project Manager</span>
+                                <span class="role-tag role-cad">CAD Team (for corrections)</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Upload final survey package to authority portal</li>
+                                    <li>Submit all required hardcopy documents (if needed)</li>
+                                    <li>Pay submission fees</li>
+                                    <li>Monitor submission status on authority portal daily</li>
+                                    <li>Receive authority review comments (if any)</li>
+                                    <li>Analyze comments and identify required corrections</li>
+                                    <li>Send corrections back to CAD team for rectification</li>
+                                    <li>Re-submit corrected documents to authority</li>
+                                    <li>Follow up with authority for expedited processing</li>
+                                    <li>Repeat rectification loop until approval received</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>🔁 The Rectification Loop (Common)</h4>
+                                <ul class="detail-list">
+                                    <li>1st submission → Authority comments (30-50% of cases)</li>
+                                    <li>Correction → 2nd submission → Usually approved</li>
+                                    <li>Complex projects may require 3-4 submission rounds</li>
+                                    <li>Average: 1.5 submissions per project</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Outputs</h4>
+                                <ul class="detail-list">
+                                    <li>Submission confirmation and reference numbers</li>
+                                    <li>Authority review comments (documented)</li>
+                                    <li>Rectification records</li>
+                                    <li>Final authority approval notification</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#3a1a1a; border-color:#cc4444; color:#cc4444; top:30px;">9</div>
+                </div>
+
+                <!-- PHASE 10 -->
+                <div class="phase-block">
+                    <div class="phase-card" onclick="togglePhase(this)">
+                        <div class="phase-header">
+                            <div class="phase-icon">🏆</div>
+                            <div>
+                                <div class="phase-title">Phase 10: Approval, Certificate Issuance &amp; Client Delivery</div>
+                                <div class="phase-duration">⏱ Duration: 1–3 days</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">
+                            The authority approves the survey and issues the official certificate — Title Deed, Oqood Certificate, or Building Completion Certificate. The survey company delivers all final documents to the client and closes the project.
+                        </div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>👤 Responsible Roles</h4>
+                                <span class="role-tag role-admin">Admin / Registration</span>
+                                <span class="role-tag role-manager">Project Manager</span>
+                                <span class="role-tag role-sales">Sales (relationship)</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Activities Performed</h4>
+                                <ul class="detail-list">
+                                    <li>Download approved certificate from authority portal</li>
+                                    <li>Verify certificate details are correct</li>
+                                    <li>Prepare final deliverable package for client</li>
+                                    <li>Include: certificate, final survey report, approved drawings</li>
+                                    <li>Generate final invoice (remaining balance)</li>
+                                    <li>Deliver package to client (digital + hardcopy)</li>
+                                    <li>Collect final payment</li>
+                                    <li>Archive all project documents</li>
+                                    <li>Close the project in the system</li>
+                                    <li>Request client feedback / testimonial</li>
+                                    <li>Update client record for future business</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📤 Final Deliverables to Client</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Title Deed Certificate</strong> (for completed buildings)</li>
+                                    <li><strong>Oqood Certificate</strong> (for under-construction buildings)</li>
+                                    <li><strong>Building Completion Certificate</strong> (for Third-Party Survey)</li>
+                                    <li>Final approved survey report</li>
+                                    <li>Approved AutoCAD drawings</li>
+                                    <li>Area calculation schedules</li>
+                                    <li>Color cut sheets</li>
+                                    <li>Final invoice &amp; payment receipt</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▼ Click to expand details</div>
+                    </div>
+                    <div class="phase-number" style="background:#1a3a3a; border-color:#44cccc; color:#44cccc; top:30px;">10</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====== SECTION: SWIMLANE ====== -->
+        <div class="section" id="sec-swimlane">
+            <h2 class="section-title">Swimlane View — Who Does What &amp; When</h2>
+            <p class="section-subtitle">Scroll horizontally to see all phases. Each row represents a team role.</p>
+
+            <div class="swimlane-container">
+                <div class="swimlane-grid">
+                    <!-- Headers -->
+                    <div class="swim-header">ROLE / TEAM</div>
+                    <div class="swim-header">P1: Inquiry</div>
+                    <div class="swim-header">P2: Quotation</div>
+                    <div class="swim-header">P3: Doc Collection</div>
+                    <div class="swim-header">P4: Authority App</div>
+                    <div class="swim-header">P5: Site Scheduling</div>
+                    <div class="swim-header">P6: Field Survey</div>
+                    <div class="swim-header">P7: Processing</div>
+                    <div class="swim-header">P8: QA Review</div>
+                    <div class="swim-header">P9: Submission</div>
+                    <div class="swim-header">P10: Delivery</div>
+
+                    <!-- Row: Sales -->
+                    <div class="swim-role-header">🟢 Sales / BD</div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Capture lead</div><div class="task-tool">Phone/Email/Walk-in</div></div>
+                        <div class="swim-task"><div class="task-name">Qualify prospect</div><div class="task-tool">CRM</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Prepare quotation</div><div class="task-tool">Sales Template</div></div>
+                        <div class="swim-task"><div class="task-name">Negotiate &amp; close</div><div class="task-tool">CRM → Sale Order</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Client handover</div><div class="task-tool">Relationship mgmt</div></div>
+                        <div class="swim-task"><div class="task-name">Upsell next project</div><div class="task-tool">CRM</div></div>
+                    </div>
+
+                    <!-- Row: Admin -->
+                    <div class="swim-role-header">🔴 Admin / Registration</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Collect advance</div><div class="task-tool">Accounting</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Send doc checklist</div><div class="task-tool">Email template</div></div>
+                        <div class="swim-task"><div class="task-name">Collect &amp; verify docs</div><div class="task-tool">Document mgmt</div></div>
+                        <div class="swim-task"><div class="task-name">Follow up missing</div><div class="task-tool">Email/Phone</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Submit to portal</div><div class="task-tool">DLD/ADM Portal</div></div>
+                        <div class="swim-task"><div class="task-name">Pay authority fees</div><div class="task-tool">Online payment</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Coordinate access</div><div class="task-tool">Phone/Email</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Upload to portal</div><div class="task-tool">Authority portal</div></div>
+                        <div class="swim-task"><div class="task-name">Track status daily</div><div class="task-tool">Portal + tracker</div></div>
+                        <div class="swim-task"><div class="task-name">Handle rectification</div><div class="task-tool">Coord with CAD</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Download certificate</div><div class="task-tool">Authority portal</div></div>
+                        <div class="swim-task"><div class="task-name">Generate final invoice</div><div class="task-tool">Accounting</div></div>
+                        <div class="swim-task"><div class="task-name">Archive project</div><div class="task-tool">Document mgmt</div></div>
+                    </div>
+
+                    <!-- Row: Project Manager -->
+                    <div class="swim-role-header">🔵 Project Manager</div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Assess complexity</div><div class="task-tool">Experience</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Define scope &amp; price</div><div class="task-tool">Rate card</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Monitor doc status</div><div class="task-tool">Project dashboard</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Oversee application</div><div class="task-tool">Project mgmt</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Assign surveyor</div><div class="task-tool">Planning / Gantt</div></div>
+                        <div class="swim-task"><div class="task-name">Verify equipment</div><div class="task-tool">Inventory check</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Monitor field progress</div><div class="task-tool">Mobile app / GPS</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Review progress</div><div class="task-tool">Task tracking</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Final sign-off</div><div class="task-tool">Approval workflow</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Escalate delays</div><div class="task-tool">Communication</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Close project</div><div class="task-tool">Project mgmt</div></div>
+                        <div class="swim-task"><div class="task-name">Client satisfaction</div><div class="task-tool">Feedback form</div></div>
+                    </div>
+
+                    <!-- Row: Field Surveyor -->
+                    <div class="swim-role-header">🔷 Field Surveyor</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Review site docs</div><div class="task-tool">Document pkg</div></div>
+                        <div class="swim-task"><div class="task-name">Prepare equipment</div><div class="task-tool">Equipment check</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task" style="border-color:#4488cc;"><div class="task-name">🎯 CORE: Field survey</div><div class="task-tool">Total Station/GNSS</div></div>
+                        <div class="swim-task"><div class="task-name">Capture measurements</div><div class="task-tool">Instruments</div></div>
+                        <div class="swim-task"><div class="task-name">Site photographs</div><div class="task-tool">Camera</div></div>
+                        <div class="swim-task"><div class="task-name">Client sign-off</div><div class="task-tool">Visit form</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Transfer raw data</div><div class="task-tool">USB / Cloud</div></div>
+                        <div class="swim-task"><div class="task-name">Brief CAD team</div><div class="task-tool">Internal meeting</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+
+                    <!-- Row: CAD/GIS -->
+                    <div class="swim-role-header">🟣 CAD / GIS Team</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task" style="border-color:#8844cc;"><div class="task-name">🎯 CORE: CAD drafting</div><div class="task-tool">AutoCAD</div></div>
+                        <div class="swim-task"><div class="task-name">Area calculations</div><div class="task-tool">AutoCAD + Excel</div></div>
+                        <div class="swim-task"><div class="task-name">Color cut sheets</div><div class="task-tool">Rendering SW</div></div>
+                        <div class="swim-task"><div class="task-name">Survey report</div><div class="task-tool">Report template</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Respond to QA notes</div><div class="task-tool">AutoCAD revisions</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Fix DLD comments</div><div class="task-tool">AutoCAD revisions</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+
+                    <!-- Row: QA -->
+                    <div class="swim-role-header">🟠 QA / Senior Surveyor</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task" style="border-color:#cc8844;"><div class="task-name">🎯 CORE: QA review</div><div class="task-tool">Manual verification</div></div>
+                        <div class="swim-task"><div class="task-name">Verify calculations</div><div class="task-tool">Cross-check data</div></div>
+                        <div class="swim-task"><div class="task-name">Approve or reject</div><div class="task-tool">Approval stamp</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Review corrections</div><div class="task-tool">Re-verify</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SECTION: SERVICES ====== -->
+        <div class="section" id="sec-services">
+            <h2 class="section-title">Service-Specific Workflows</h2>
+            <p class="section-subtitle">Each service type follows the master flow but with specific variations</p>
+
+            <div class="service-grid">
+                <!-- Title Deed -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3>📜 Title Deed Registration</h3>
+                        <p>For completed/built properties • Timeline: 7–15 days</p>
+                    </div>
+                    <div class="service-steps">
+                        <div class="service-step"><div class="step-num">1</div><div class="step-info"><h4>Client Request &amp; Docs</h4><p>Collect completion cert, approved plans, passport, Emirates ID, NOC</p></div></div>
+                        <div class="service-step"><div class="step-num">2</div><div class="step-info"><h4>DLD Application</h4><p>Submit via DLD portal with all documents. Fee: AED 600/unit</p></div></div>
+                        <div class="service-step"><div class="step-num">3</div><div class="step-info"><h4>Site Survey</h4><p>Measure all units, common areas, verify against approved plans</p></div></div>
+                        <div class="service-step"><div class="step-num">4</div><div class="step-info"><h4>CAD Processing</h4><p>Floor plans, area schedules, survey report per DLD format</p></div></div>
+                        <div class="service-step"><div class="step-num">5</div><div class="step-info"><h4>QA &amp; Submission</h4><p>Review, submit to DLD, handle comments if any</p></div></div>
+                        <div class="service-step"><div class="step-num">6</div><div class="step-info"><h4>Title Deed Issuance</h4><p>DLD issues Title Deed certificate for each registered unit</p></div></div>
+                    </div>
+                </div>
+
+                <!-- Oqood -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3>🏗️ Oqood Registration</h3>
+                        <p>For under-construction (off-plan) properties • Timeline: 5–10 days</p>
+                    </div>
+                    <div class="service-steps">
+                        <div class="service-step"><div class="step-num">1</div><div class="step-info"><h4>Developer Request &amp; Docs</h4><p>Collect SPA, approved plans, developer trade license, buyer details</p></div></div>
+                        <div class="service-step"><div class="step-num">2</div><div class="step-info"><h4>Oqood Portal Submission</h4><p>Developer portal: register project, upload unit breakdown</p></div></div>
+                        <div class="service-step"><div class="step-num">3</div><div class="step-info"><h4>Unit Survey (from plans)</h4><p>Calculate unit areas from approved architectural plans (no site visit needed if under construction)</p></div></div>
+                        <div class="service-step"><div class="step-num">4</div><div class="step-info"><h4>Area Schedule &amp; Plans</h4><p>Prepare unit-wise area breakdown, color cut sheets for marketing</p></div></div>
+                        <div class="service-step"><div class="step-num">5</div><div class="step-info"><h4>DLD Review</h4><p>DLD reviews and approves the unit registration</p></div></div>
+                        <div class="service-step"><div class="step-num">6</div><div class="step-info"><h4>Oqood Certificate</h4><p>Each buyer receives Oqood certificate confirming pre-registration</p></div></div>
+                    </div>
+                </div>
+
+                <!-- Third Party Survey -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3>🔍 Third-Party Survey Report</h3>
+                        <p>Mandatory before Building Completion Certificate • Timeline: 10–20 days</p>
+                    </div>
+                    <div class="service-steps">
+                        <div class="service-step"><div class="step-num">1</div><div class="step-info"><h4>Authority Requirement</h4><p>DSO/DDA/Tecom requires independent survey before completion cert</p></div></div>
+                        <div class="service-step"><div class="step-num">2</div><div class="step-info"><h4>Collect Approved Plans</h4><p>Get original approved building permit plans and specifications</p></div></div>
+                        <div class="service-step"><div class="step-num">3</div><div class="step-info"><h4>Comprehensive Site Survey</h4><p>Full building measurement: every floor, unit, common area, parking</p></div></div>
+                        <div class="service-step"><div class="step-num">4</div><div class="step-info"><h4>FAR Calculation</h4><p>Calculate actual FAR vs permitted FAR. Compare built-up vs approved</p></div></div>
+                        <div class="service-step"><div class="step-num">5</div><div class="step-info"><h4>Compliance Report</h4><p>Detailed report showing approved vs actual with variance analysis</p></div></div>
+                        <div class="service-step"><div class="step-num">6</div><div class="step-info"><h4>Authority Submission</h4><p>Submit to DSO/DDA. If compliant → completion certificate issued</p></div></div>
+                    </div>
+                </div>
+
+                <!-- As-Built -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3>📐 As-Built Drawings</h3>
+                        <p>Post-construction documentation • Timeline: 7–15 days</p>
+                    </div>
+                    <div class="service-steps">
+                        <div class="service-step"><div class="step-num">1</div><div class="step-info"><h4>Contractor/Owner Request</h4><p>Need as-built after construction completion or major renovation</p></div></div>
+                        <div class="service-step"><div class="step-num">2</div><div class="step-info"><h4>Collect Original Drawings</h4><p>Get approved architectural plans and any change orders</p></div></div>
+                        <div class="service-step"><div class="step-num">3</div><div class="step-info"><h4>Full Building Survey</h4><p>Detailed measurement of actual construction as-built</p></div></div>
+                        <div class="service-step"><div class="step-num">4</div><div class="step-info"><h4>Compare &amp; Draft</h4><p>Overlay actual vs approved, highlight all deviations</p></div></div>
+                        <div class="service-step"><div class="step-num">5</div><div class="step-info"><h4>As-Built Drawing Set</h4><p>Complete revised drawing set showing exact built conditions</p></div></div>
+                        <div class="service-step"><div class="step-num">6</div><div class="step-info"><h4>Delivery</h4><p>Digital (DWG + PDF) and hardcopy delivery to client</p></div></div>
+                    </div>
+                </div>
+
+                <!-- Final Demarcation -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3>📏 Final Demarcation</h3>
+                        <p>Pre-completion certificate verification • Timeline: 5–10 days</p>
+                    </div>
+                    <div class="service-steps">
+                        <div class="service-step"><div class="step-num">1</div><div class="step-info"><h4>Triggered by Authority</h4><p>Required before building completion certificate issuance</p></div></div>
+                        <div class="service-step"><div class="step-num">2</div><div class="step-info"><h4>Plot Boundary Survey</h4><p>Verify plot limits match affection plan exactly</p></div></div>
+                        <div class="service-step"><div class="step-num">3</div><div class="step-info"><h4>Building Position Check</h4><p>Confirm building is within permitted setbacks and boundaries</p></div></div>
+                        <div class="service-step"><div class="step-num">4</div><div class="step-info"><h4>Comparison Report</h4><p>Actual structure vs permitted limits with coordinates</p></div></div>
+                        <div class="service-step"><div class="step-num">5</div><div class="step-info"><h4>Compliance Certification</h4><p>Issue demarcation report confirming compliance or flagging issues</p></div></div>
+                    </div>
+                </div>
+
+                <!-- Ejari -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3>🏠 Ejari Registration Support</h3>
+                        <p>Rental registration documentation • Timeline: 3–5 days</p>
+                    </div>
+                    <div class="service-steps">
+                        <div class="service-step"><div class="step-num">1</div><div class="step-info"><h4>Landlord/Tenant Request</h4><p>Need floor plan and area documentation for Ejari registration</p></div></div>
+                        <div class="service-step"><div class="step-num">2</div><div class="step-info"><h4>Unit Survey</h4><p>Measure specific rental unit (if not already surveyed)</p></div></div>
+                        <div class="service-step"><div class="step-num">3</div><div class="step-info"><h4>Floor Plan &amp; Area Cert</h4><p>Prepare unit floor plan with area calculation</p></div></div>
+                        <div class="service-step"><div class="step-num">4</div><div class="step-info"><h4>Ejari Support Docs</h4><p>Provide documentation needed for Ejari portal registration</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SECTION: DOCUMENTS ====== -->
+        <div class="section" id="sec-documents">
+            <h2 class="section-title">Documents &amp; Deliverables Map</h2>
+            <p class="section-subtitle">Every document produced, consumed, or exchanged across the entire workflow</p>
+
+            <h3 style="color:#00d4aa; margin:30px 0 15px; font-size:1.2em;">📥 Input Documents (Collected from Client)</h3>
+            <table class="output-table">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Required For</th>
+                        <th>Source</th>
+                        <th>Used In Phase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Approved Architectural Plans</td><td>All services</td><td>Client / Municipality</td><td>Phase 3, 6, 7</td></tr>
+                    <tr><td>Building Permit</td><td>Title Deed, Third-Party</td><td>Municipality</td><td>Phase 3</td></tr>
+                    <tr><td>Plot Plan / Affection Plan</td><td>All services</td><td>DLD</td><td>Phase 3, 6</td></tr>
+                    <tr><td>NOC (No Objection Certificate)</td><td>Title Deed, Oqood</td><td>Developer / Authority</td><td>Phase 3, 4</td></tr>
+                    <tr><td>Owner Passport &amp; Emirates ID</td><td>All services</td><td>Client</td><td>Phase 3, 4</td></tr>
+                    <tr><td>Developer Trade License</td><td>Oqood, Master Community</td><td>Developer</td><td>Phase 3</td></tr>
+                    <tr><td>Sale Purchase Agreement (SPA)</td><td>Oqood</td><td>Developer / Buyer</td><td>Phase 3</td></tr>
+                    <tr><td>Completion Certificate</td><td>Title Deed</td><td>Authority</td><td>Phase 3</td></tr>
+                    <tr><td>Power of Attorney</td><td>When owner absent</td><td>Notary</td><td>Phase 3, 4</td></tr>
+                    <tr><td>Previous Survey Reports</td><td>Correction / Re-survey</td><td>Previous surveyor</td><td>Phase 3, 6</td></tr>
+                </tbody>
+            </table>
+
+            <h3 style="color:#00d4aa; margin:30px 0 15px; font-size:1.2em;">📤 Output Documents (Produced by Survey Company)</h3>
+            <table class="output-table">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Produced In Phase</th>
+                        <th>Destination</th>
+                        <th>Format</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Quotation / Proposal</td><td>Phase 2</td><td><span class="status-badge status-client">Client</span></td><td>PDF</td></tr>
+                    <tr><td>Site Visit Report / Form</td><td>Phase 6</td><td><span class="status-badge status-internal">Internal</span></td><td>Paper → Digital</td></tr>
+                    <tr><td>Raw Survey Data Files</td><td>Phase 6</td><td><span class="status-badge status-internal">Internal</span></td><td>.RAW / .CSV</td></tr>
+                    <tr><td>AutoCAD Floor Plans (per floor)</td><td>Phase 7</td><td><span class="status-badge status-authority">Authority</span> <span class="status-badge status-client">Client</span></td><td>.DWG / .PDF</td></tr>
+                    <tr><td>Area Calculation Schedules</td><td>Phase 7</td><td><span class="status-badge status-authority">Authority</span> <span class="status-badge status-client">Client</span></td><td>PDF / Excel</td></tr>
+                    <tr><td>Boundary / Plot Plan</td><td>Phase 7</td><td><span class="status-badge status-authority">Authority</span></td><td>.DWG / .PDF</td></tr>
+                    <tr><td>Common Area Plan</td><td>Phase 7</td><td><span class="status-badge status-authority">Authority</span> <span class="status-badge status-client">Client</span></td><td>.DWG / .PDF</td></tr>
+                    <tr><td>Color Cut Sheets</td><td>Phase 7</td><td><span class="status-badge status-client">Client</span></td><td>PDF</td></tr>
+                    <tr><td>As-Built Drawings</td><td>Phase 7</td><td><span class="status-badge status-authority">Authority</span> <span class="status-badge status-client">Client</span></td><td>.DWG / .PDF</td></tr>
+                    <tr><td>Survey Report (Draft)</td><td>Phase 7</td><td><span class="status-badge status-internal">Internal</span></td><td>Word / PDF</td></tr>
+                    <tr><td>FAR Calculation Report</td><td>Phase 7</td><td><span class="status-badge status-authority">Authority</span></td><td>PDF</td></tr>
+                    <tr><td>QA Sign-Off Sheet</td><td>Phase 8</td><td><span class="status-badge status-internal">Internal</span></td><td>Digital record</td></tr>
+                    <tr><td>Authority Submission Package</td><td>Phase 9</td><td><span class="status-badge status-authority">Authority</span></td><td>Portal upload</td></tr>
+                    <tr><td>Title Deed Certificate</td><td>Phase 10</td><td><span class="status-badge status-client">Client</span></td><td>Official PDF</td></tr>
+                    <tr><td>Oqood Certificate</td><td>Phase 10</td><td><span class="status-badge status-client">Client</span></td><td>Official PDF</td></tr>
+                    <tr><td>Building Completion Certificate</td><td>Phase 10</td><td><span class="status-badge status-client">Client</span></td><td>Official PDF</td></tr>
+                    <tr><td>Final Invoice &amp; Payment Receipt</td><td>Phase 10</td><td><span class="status-badge status-client">Client</span></td><td>PDF</td></tr>
+                </tbody>
+            </table>
+
+            <h3 style="color:#00d4aa; margin:30px 0 15px; font-size:1.2em;">🏛 Authority-Specific Document Requirements</h3>
+            <table class="output-table">
+                <thead>
+                    <tr>
+                        <th>Authority</th>
+                        <th>Emirate</th>
+                        <th>Service</th>
+                        <th>Key Specific Requirements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>DLD (Dubai Land Department)</td><td>Dubai</td><td>Title Deed, Oqood</td><td>Specific DWG template, georeferenced coordinates, e-portal submission</td></tr>
+                    <tr><td>DDA (Dubai Development Authority)</td><td>Dubai (Freehold zones)</td><td>Third-Party Survey, As-Built</td><td>FAR compliance report, DDA-approved surveyor stamp</td></tr>
+                    <tr><td>DSO (Dubai Silicon Oasis)</td><td>Dubai (DSO zone)</td><td>Third-Party Survey</td><td>DSO-format report, compliance with DSO master plan</td></tr>
+                    <tr><td>Trakhees (Port &amp; Free Zone)</td><td>Dubai (Jebel Ali)</td><td>Title Deed, As-Built</td><td>Trakhees portal, specific coordinate system (WGS84)</td></tr>
+                    <tr><td>ADM (Abu Dhabi Municipality)</td><td>Abu Dhabi</td><td>Title Deed, Tawtheeq</td><td>ADM-approved surveyor, ADRP coordinate system, Tawtheeq portal</td></tr>
+                    <tr><td>RAK Land Department</td><td>Ras Al Khaimah</td><td>Title Deed, As-Built</td><td>RAK LAN portal, RAK coordinate datum</td></tr>
+                    <tr><td>Ajman DLD</td><td>Ajman</td><td>Title Deed</td><td>Ajman portal submission, specific plan format</td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Key Insight:</strong> The most common causes of project delays in UAE survey work are:
+                <ol style="margin-top:8px; padding-left:20px; line-height:1.8;">
+                    <li>Client delays in providing required documents (Phase 3) — accounts for ~40% of delays</li>
+                    <li>Authority rectification rounds (Phase 9) — accounts for ~35% of delays</li>
+                    <li>Site access coordination issues (Phase 5) — accounts for ~15% of delays</li>
+                    <li>Internal CAD revision loops (Phase 7-8) — accounts for ~10% of delays</li>
+                </ol>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <strong>UAE Survey Company — End-to-End Process Flow</strong><br>
+        GeoEstate Survey Services · Covering Dubai, Abu Dhabi, RAK, Ajman, UAQ<br>
+        <span style="color:#2a3a5a; font-size:0.8em;">Document generated for internal workflow mapping &amp; Odoo implementation planning</span>
+    </div>
+
+    <!-- TOOLTIP -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // ============ SECTION NAVIGATION ============
+        function showSection(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('sec-' + name).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ============ PHASE CARD TOGGLE ============
+        function togglePhase(card) {
+            const wasExpanded = card.classList.contains('expanded');
+            // Collapse all
+            document.querySelectorAll('.phase-card').forEach(c => c.classList.remove('expanded'));
+            // Toggle the clicked one
+            if (!wasExpanded) {
+                card.classList.add('expanded');
+                card.querySelector('.expand-hint').textContent = '▲ Click to collapse';
+                // Smooth scroll to card
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            } else {
+                card.querySelector('.expand-hint').textContent = '▼ Click to expand details';
+            }
+        }
+
+        // ============ SWIM TASK TOOLTIP ============
+        const tooltip = document.getElementById('tooltip');
+
+        document.querySelectorAll('.swim-task').forEach(task => {
+            task.addEventListener('mouseenter', function(e) {
+                const name = this.querySelector('.task-name') ? this.querySelector('.task-name').textContent : '';
+                const tool = this.querySelector('.task-tool') ? this.querySelector('.task-tool').textContent : '';
+                tooltip.innerHTML = '<strong>' + name + '</strong><br>Tool: ' + tool;
+                tooltip.classList.add('visible');
+            });
+            task.addEventListener('mousemove', function(e) {
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY - 10) + 'px';
+            });
+            task.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('visible');
+            });
+        });
+
+        // ============ KEYBOARD SHORTCUT ============
+        document.addEventListener('keydown', function(e) {
+            const tabs = ['overview', 'masterflow', 'swimlane', 'services', 'documents'];
+            const num = parseInt(e.key);
+            if (num >= 1 && num <= tabs.length) {
+                const tabEl = document.querySelectorAll('.nav-tab')[num - 1];
+                if (tabEl) {
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    document.getElementById('sec-' + tabs[num - 1]).classList.add('active');
+                    tabEl.classList.add('active');
+                }
+            }
+            // Escape key collapses all phase cards
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.phase-card').forEach(c => {
+                    c.classList.remove('expanded');
+                    const hint = c.querySelector('.expand-hint');
+                    if (hint) hint.textContent = '▼ Click to expand details';
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

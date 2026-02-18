@@ -1,0 +1,2611 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UAE Survey Company - Extended Process Flows (Part 2)</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #0a0e27;
+        color: #e0e0e0;
+        overflow-x: hidden;
+      }
+
+      .header {
+        background: linear-gradient(
+          135deg,
+          #1a1f4e 0%,
+          #0d3b66 50%,
+          #14555e 100%
+        );
+        padding: 35px 20px;
+        text-align: center;
+        border-bottom: 3px solid #00d4aa;
+      }
+
+      .header h1 {
+        font-size: 2em;
+        color: #00d4aa;
+        margin-bottom: 8px;
+      }
+      .header p {
+        font-size: 1em;
+        color: #8899bb;
+      }
+
+      .nav-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        padding: 15px;
+        background: #0d1230;
+        flex-wrap: wrap;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid #1a2055;
+      }
+
+      .nav-tab {
+        padding: 9px 18px;
+        border: 1px solid #2a3070;
+        border-radius: 25px;
+        background: transparent;
+        color: #7788aa;
+        cursor: pointer;
+        font-size: 0.85em;
+        transition: all 0.3s ease;
+      }
+
+      .nav-tab:hover,
+      .nav-tab.active {
+        background: linear-gradient(135deg, #00d4aa, #0088cc);
+        color: #fff;
+        border-color: #00d4aa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 1.7em;
+        color: #00d4aa;
+        margin: 30px 0 8px;
+      }
+      .section-subtitle {
+        text-align: center;
+        color: #6677aa;
+        margin-bottom: 25px;
+        font-size: 0.95em;
+      }
+
+      /* ============ RECTIFICATION LOOP ============ */
+      .rect-flow {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        padding: 20px 0;
+      }
+
+      .rect-node {
+        background: linear-gradient(145deg, #131842, #1a2055);
+        border: 2px solid #2a3070;
+        border-radius: 14px;
+        padding: 20px 30px;
+        width: 90%;
+        max-width: 700px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s;
+      }
+
+      .rect-node:hover {
+        border-color: #00d4aa55;
+        box-shadow: 0 4px 20px rgba(0, 212, 170, 0.1);
+      }
+
+      .rect-node h3 {
+        color: #fff;
+        font-size: 1.1em;
+        margin-bottom: 6px;
+      }
+      .rect-node p {
+        color: #8899bb;
+        font-size: 0.88em;
+        line-height: 1.5;
+      }
+
+      .rect-node .node-tag {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        padding: 3px 12px;
+        border-radius: 10px;
+        font-size: 0.7em;
+        font-weight: 700;
+      }
+
+      .tag-company {
+        background: #1a3a2a;
+        color: #44cc88;
+        border: 1px solid #44cc88;
+      }
+      .tag-authority {
+        background: #2a1a2a;
+        color: #cc44aa;
+        border: 1px solid #cc44aa;
+      }
+      .tag-decision {
+        background: #3a3a1a;
+        color: #cccc44;
+        border: 1px solid #cccc44;
+      }
+      .tag-client {
+        background: #1a2a3a;
+        color: #4488cc;
+        border: 1px solid #4488cc;
+      }
+
+      .rect-arrow {
+        font-size: 1.8em;
+        color: #00d4aa;
+        padding: 5px 0;
+        animation: bounceDown 1.5s ease-in-out infinite;
+      }
+
+      @keyframes bounceDown {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(4px);
+        }
+      }
+
+      .rect-branch {
+        display: flex;
+        gap: 30px;
+        width: 90%;
+        max-width: 700px;
+        justify-content: center;
+      }
+
+      .rect-branch-item {
+        flex: 1;
+        background: linear-gradient(145deg, #131842, #1a2055);
+        border: 2px solid;
+        border-radius: 14px;
+        padding: 18px;
+        text-align: center;
+      }
+
+      .rect-branch-item.yes {
+        border-color: #44cc88;
+      }
+      .rect-branch-item.no {
+        border-color: #cc4444;
+      }
+      .rect-branch-item h4 {
+        font-size: 1em;
+        margin-bottom: 6px;
+      }
+      .rect-branch-item.yes h4 {
+        color: #44cc88;
+      }
+      .rect-branch-item.no h4 {
+        color: #cc4444;
+      }
+      .rect-branch-item p {
+        color: #8899bb;
+        font-size: 0.82em;
+      }
+
+      .rect-loop-arrow {
+        color: #cc4444;
+        font-size: 0.85em;
+        text-align: right;
+        width: 90%;
+        max-width: 700px;
+        padding: 5px 0;
+      }
+
+      .rect-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin: 25px 0;
+        width: 90%;
+        max-width: 700px;
+      }
+
+      .rect-stat {
+        background: #131842;
+        border: 1px solid #2a3070;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+      }
+
+      .rect-stat .val {
+        font-size: 1.5em;
+        font-weight: 800;
+        color: #00d4aa;
+      }
+      .rect-stat .lbl {
+        color: #6677aa;
+        font-size: 0.8em;
+        margin-top: 3px;
+      }
+
+      /* ============ FINANCIAL FLOW ============ */
+      .fin-timeline {
+        position: relative;
+        padding: 20px 0 20px 60px;
+      }
+
+      .fin-timeline::before {
+        content: "";
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, #00d4aa, #cc8844, #44cc88);
+      }
+
+      .fin-event {
+        position: relative;
+        margin-bottom: 25px;
+        padding-left: 30px;
+      }
+
+      .fin-event::before {
+        content: "";
+        position: absolute;
+        left: -38px;
+        top: 8px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 3px solid;
+      }
+
+      .fin-event.income::before {
+        border-color: #44cc88;
+        background: #1a3a2a;
+      }
+      .fin-event.expense::before {
+        border-color: #cc4444;
+        background: #3a1a1a;
+      }
+      .fin-event.neutral::before {
+        border-color: #4488cc;
+        background: #1a2a3a;
+      }
+
+      .fin-card {
+        background: linear-gradient(145deg, #131842, #1a2055);
+        border: 1px solid #2a3070;
+        border-radius: 12px;
+        padding: 18px;
+        transition: all 0.3s;
+      }
+
+      .fin-card:hover {
+        border-color: #00d4aa44;
+      }
+
+      .fin-card .fin-phase {
+        color: #6677aa;
+        font-size: 0.75em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .fin-card h4 {
+        color: #fff;
+        font-size: 1em;
+        margin: 5px 0;
+      }
+      .fin-card .fin-amount {
+        font-size: 1.2em;
+        font-weight: 800;
+        margin: 5px 0;
+      }
+      .fin-card .fin-amount.green {
+        color: #44cc88;
+      }
+      .fin-card .fin-amount.red {
+        color: #cc4444;
+      }
+      .fin-card .fin-amount.blue {
+        color: #4488cc;
+      }
+      .fin-card p {
+        color: #8899bb;
+        font-size: 0.83em;
+        line-height: 1.5;
+      }
+
+      .fin-legend {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        padding: 15px;
+        background: #0d1230;
+        border-radius: 12px;
+        margin-bottom: 20px;
+      }
+
+      .fin-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85em;
+        color: #8899bb;
+      }
+      .fin-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      /* ============ EQUIPMENT LIFECYCLE ============ */
+      .equip-flow {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 20px 0;
+      }
+
+      .equip-stage {
+        min-width: 220px;
+        flex-shrink: 0;
+        background: linear-gradient(145deg, #131842, #1a2055);
+        border: 1px solid #2a3070;
+        border-radius: 14px;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s;
+      }
+
+      .equip-stage:hover {
+        border-color: #00d4aa44;
+        transform: translateY(-3px);
+      }
+
+      .equip-stage .eq-icon {
+        font-size: 2.2em;
+        margin-bottom: 10px;
+      }
+      .equip-stage h4 {
+        color: #fff;
+        font-size: 0.95em;
+        margin-bottom: 6px;
+      }
+      .equip-stage p {
+        color: #8899bb;
+        font-size: 0.8em;
+        line-height: 1.5;
+      }
+
+      .equip-arrow {
+        display: flex;
+        align-items: center;
+        color: #00d4aa;
+        font-size: 1.5em;
+        flex-shrink: 0;
+      }
+
+      .equip-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
+        margin: 25px 0;
+      }
+
+      .equip-item {
+        background: #131842;
+        border: 1px solid #2a3070;
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        transition: all 0.3s;
+      }
+
+      .equip-item:hover {
+        border-color: #00d4aa44;
+      }
+
+      .equip-item .ei-icon {
+        font-size: 2em;
+        min-width: 50px;
+        text-align: center;
+      }
+      .equip-item h4 {
+        color: #fff;
+        font-size: 0.9em;
+      }
+      .equip-item p {
+        color: #6677aa;
+        font-size: 0.78em;
+        margin-top: 3px;
+      }
+      .equip-item .ei-cost {
+        color: #00d4aa;
+        font-weight: 700;
+        font-size: 0.85em;
+        margin-top: 4px;
+      }
+
+      /* ============ ODOO MAPPING ============ */
+      .odoo-map {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 18px;
+        padding: 20px 0;
+      }
+
+      .odoo-card {
+        background: linear-gradient(145deg, #131842, #1a2055);
+        border: 1px solid #2a3070;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .odoo-card:hover {
+        border-color: #00d4aa44;
+        box-shadow: 0 5px 20px rgba(0, 212, 170, 0.1);
+      }
+
+      .odoo-card-top {
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 1px solid #2a3070;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 212, 170, 0.08),
+          rgba(0, 136, 204, 0.08)
+        );
+      }
+
+      .odoo-card-top .odoo-icon {
+        font-size: 2em;
+      }
+      .odoo-card-top h3 {
+        color: #00d4aa;
+        font-size: 1.05em;
+      }
+      .odoo-card-top .odoo-type {
+        color: #6677aa;
+        font-size: 0.8em;
+      }
+
+      .odoo-card-body {
+        padding: 15px 20px;
+      }
+
+      .odoo-phase-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 12px;
+      }
+
+      .odoo-phase-tag {
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.7em;
+        font-weight: 600;
+        background: #1a2a3a;
+        color: #4488cc;
+        border: 1px solid #4488cc44;
+      }
+
+      .odoo-features {
+        list-style: none;
+      }
+
+      .odoo-features li {
+        padding: 4px 0 4px 18px;
+        position: relative;
+        color: #99aabb;
+        font-size: 0.83em;
+        line-height: 1.5;
+      }
+
+      .odoo-features li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #00d4aa;
+        font-weight: 700;
+      }
+
+      .odoo-custom {
+        border-color: #cc8844 !important;
+      }
+      .odoo-custom .odoo-card-top h3 {
+        color: #cc8844;
+      }
+      .odoo-custom .odoo-phase-tag {
+        background: #3a2a1a;
+        color: #cc8844;
+        border-color: #cc884444;
+      }
+      .odoo-custom .odoo-features li::before {
+        color: #cc8844;
+      }
+
+      /* ============ KPI DASHBOARD ============ */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 18px;
+        padding: 20px 0;
+      }
+
+      .kpi-card {
+        background: linear-gradient(145deg, #131842, #1a2055);
+        border: 1px solid #2a3070;
+        border-radius: 14px;
+        padding: 22px;
+        transition: all 0.3s;
+      }
+
+      .kpi-card:hover {
+        border-color: #00d4aa44;
+      }
+
+      .kpi-card h4 {
+        color: #fff;
+        font-size: 0.95em;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .kpi-bar-container {
+        margin: 8px 0;
+      }
+
+      .kpi-bar-label {
+        display: flex;
+        justify-content: space-between;
+        color: #8899bb;
+        font-size: 0.78em;
+        margin-bottom: 4px;
+      }
+
+      .kpi-bar {
+        height: 8px;
+        background: #1a2050;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .kpi-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1.5s ease;
+      }
+
+      .kpi-note {
+        color: #6677aa;
+        font-size: 0.75em;
+        margin-top: 10px;
+        font-style: italic;
+      }
+
+      /* ============ DAY-IN-LIFE TIMELINE ============ */
+      .day-timeline {
+        padding: 20px 0;
+      }
+
+      .day-role-section {
+        margin-bottom: 30px;
+      }
+
+      .day-role-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding: 10px 15px;
+        background: #131842;
+        border-radius: 10px;
+        border-left: 4px solid;
+      }
+
+      .day-role-header h3 {
+        color: #fff;
+        font-size: 1em;
+      }
+      .day-role-header p {
+        color: #6677aa;
+        font-size: 0.82em;
+      }
+
+      .day-hours {
+        display: flex;
+        gap: 3px;
+        overflow-x: auto;
+        padding: 5px 0;
+      }
+
+      .day-hour-block {
+        min-width: 100px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        font-size: 0.75em;
+        transition: all 0.2s;
+        cursor: default;
+      }
+
+      .day-hour-block:hover {
+        transform: scale(1.05);
+      }
+
+      .day-hour-block .hour-time {
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 4px;
+      }
+      .day-hour-block .hour-task {
+        color: #ccd;
+        line-height: 1.3;
+      }
+
+      .dh-field {
+        background: linear-gradient(145deg, #1a2a3a, #1a3040);
+        border: 1px solid #4488cc44;
+      }
+      .dh-office {
+        background: linear-gradient(145deg, #2a1a3a, #301a40);
+        border: 1px solid #8844cc44;
+      }
+      .dh-meeting {
+        background: linear-gradient(145deg, #1a3a2a, #1a4030);
+        border: 1px solid #44cc8844;
+      }
+      .dh-admin {
+        background: linear-gradient(145deg, #3a2a1a, #403020);
+        border: 1px solid #cc884444;
+      }
+      .dh-break {
+        background: linear-gradient(145deg, #1a1a2a, #202030);
+        border: 1px solid #4444cc44;
+      }
+      .dh-travel {
+        background: linear-gradient(145deg, #2a2a1a, #303020);
+        border: 1px solid #aaaa4444;
+      }
+
+      .day-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 12px 15px;
+        background: #0d1230;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .day-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8em;
+        color: #8899bb;
+      }
+      .dl-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .rect-branch {
+          flex-direction: column;
+          gap: 15px;
+        }
+        .header h1 {
+          font-size: 1.4em;
+        }
+        .odoo-map {
+          grid-template-columns: 1fr;
+        }
+        .equip-flow {
+          flex-direction: column;
+          align-items: center;
+        }
+        .equip-arrow {
+          transform: rotate(90deg);
+        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0e27;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #2a3070;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #00d4aa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🏗️ UAE Survey Company — Extended Process Flows (Part 2)</h1>
+      <p>
+        Rectification Loop • Financial Flow • Equipment Lifecycle • Odoo Mapping
+        • KPIs • Day-in-Life
+      </p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showSection('rectloop')">
+        🔁 Rectification Loop
+      </button>
+      <button class="nav-tab" onclick="showSection('financial')">
+        💰 Financial Flow
+      </button>
+      <button class="nav-tab" onclick="showSection('equipment')">
+        🔧 Equipment Lifecycle
+      </button>
+      <button class="nav-tab" onclick="showSection('odoomap')">
+        ⚙️ Odoo Module Map
+      </button>
+      <button class="nav-tab" onclick="showSection('kpis')">
+        📊 KPI Dashboard
+      </button>
+      <button class="nav-tab" onclick="showSection('daylife')">
+        🕐 Day-in-Life
+      </button>
+    </div>
+
+    <div class="container">
+      <!-- ====== RECTIFICATION LOOP ====== -->
+      <div class="section active" id="sec-rectloop">
+        <h2 class="section-title">
+          🔁 The Authority Submission & Rectification Loop
+        </h2>
+        <p class="section-subtitle">
+          This is the most critical and unpredictable part of the workflow —
+          where projects get delayed the most
+        </p>
+
+        <div class="rect-flow">
+          <div class="rect-stats">
+            <div class="rect-stat">
+              <div class="val">30–50%</div>
+              <div class="lbl">Projects Get Comments</div>
+            </div>
+            <div class="rect-stat">
+              <div class="val">~1.5x</div>
+              <div class="lbl">Avg Submissions per Project</div>
+            </div>
+            <div class="rect-stat">
+              <div class="val">3–15 days</div>
+              <div class="lbl">Authority Review Time</div>
+            </div>
+            <div class="rect-stat">
+              <div class="val">1–3 days</div>
+              <div class="lbl">Rectification Turnaround</div>
+            </div>
+          </div>
+
+          <div class="rect-node">
+            <span class="node-tag tag-company">SURVEY COMPANY</span>
+            <h3>📦 Step 1: Prepare Final Submission Package</h3>
+            <p>
+              QA-approved survey report, AutoCAD drawings, area schedules, color
+              cut sheets, and all supporting documents compiled into the
+              authority-required format.
+            </p>
+          </div>
+          <div class="rect-arrow">⬇</div>
+
+          <div class="rect-node">
+            <span class="node-tag tag-company">ADMIN TEAM</span>
+            <h3>📤 Step 2: Upload to Authority Portal</h3>
+            <p>
+              Admin team logs into the DLD/ADM/RAK portal, uploads all digital
+              files, submits hardcopy if required, pays submission fees (AED
+              500–5000), and receives a reference number.
+            </p>
+          </div>
+          <div class="rect-arrow">⬇</div>
+
+          <div class="rect-node">
+            <span class="node-tag tag-authority">AUTHORITY (DLD/ADM)</span>
+            <h3>🔍 Step 3: Authority Reviews Submission</h3>
+            <p>
+              DLD/ADM surveyor reviews all submitted documents. They check area
+              calculations, boundary compliance, drawing standards, unit
+              numbering, common area allocation, and FAR compliance. This takes
+              3–15 business days depending on authority workload.
+            </p>
+          </div>
+          <div class="rect-arrow">⬇</div>
+
+          <div class="rect-node" style="border-color: #cccc44">
+            <span class="node-tag tag-decision">DECISION POINT</span>
+            <h3>⚖️ Step 4: Approved or Comments?</h3>
+            <p>
+              The authority either approves the submission directly or returns
+              it with specific comments/observations requiring correction.
+            </p>
+          </div>
+          <div class="rect-arrow">⬇</div>
+
+          <div class="rect-branch">
+            <div class="rect-branch-item yes">
+              <h4>✅ APPROVED</h4>
+              <p>
+                All documents are accepted. Authority proceeds to issue the
+                certificate (Title Deed / Oqood / Completion Certificate).
+                ~50–70% of first submissions.
+              </p>
+              <div style="margin-top: 10px; font-size: 0.8em; color: #44cc88">
+                → Proceed to Certificate Issuance
+              </div>
+            </div>
+            <div class="rect-branch-item no">
+              <h4>❌ COMMENTS RECEIVED</h4>
+              <p>
+                Authority returns specific issues: area miscalculation, drawing
+                format error, missing document, boundary discrepancy, unit
+                naming error, etc. ~30–50% of first submissions.
+              </p>
+              <div style="margin-top: 10px; font-size: 0.8em; color: #cc4444">
+                → Enter Rectification Loop ↓
+              </div>
+            </div>
+          </div>
+
+          <div class="rect-loop-arrow">
+            🔄 RECTIFICATION LOOP (can repeat 1–4 times)
+          </div>
+          <div class="rect-arrow" style="color: #cc4444">⬇</div>
+
+          <div class="rect-node" style="border-color: #cc4444">
+            <span class="node-tag tag-company">ADMIN TEAM</span>
+            <h3>📋 Step 5: Analyze Authority Comments</h3>
+            <p>
+              Admin team receives the comments, documents each issue,
+              categorizes them (drawing error, calculation error, missing doc,
+              format issue), and assigns rectification tasks to the appropriate
+              team member.
+            </p>
+          </div>
+          <div class="rect-arrow" style="color: #cc4444">⬇</div>
+
+          <div class="rect-node" style="border-color: #cc4444">
+            <span class="node-tag tag-company">CAD / SURVEYOR TEAM</span>
+            <h3>🔧 Step 6: Rectify & Correct</h3>
+            <p>
+              CAD team corrects drawings, recalculates areas, fixes formatting.
+              If the issue requires re-measurement, field surveyor may need to
+              revisit the site. Senior surveyor re-verifies all corrections.
+              Typical turnaround: 1–3 days.
+            </p>
+          </div>
+          <div class="rect-arrow" style="color: #cc4444">⬇</div>
+
+          <div class="rect-node" style="border-color: #cc4444">
+            <span class="node-tag tag-company">QA TEAM</span>
+            <h3>✅ Step 7: QA Re-Review Corrected Package</h3>
+            <p>
+              QA reviews all corrections to ensure they address every authority
+              comment. Extra scrutiny is applied to prevent a second round of
+              comments.
+            </p>
+          </div>
+          <div class="rect-arrow" style="color: #cc4444">⬇</div>
+
+          <div class="rect-node" style="border-color: #cc4444">
+            <span class="node-tag tag-company">ADMIN TEAM</span>
+            <h3>📤 Step 8: Re-Submit to Authority</h3>
+            <p>
+              Corrected package is uploaded to the authority portal with a cover
+              letter addressing each comment point-by-point. The review cycle
+              restarts (Step 3).
+            </p>
+          </div>
+
+          <div class="rect-loop-arrow">
+            🔄 ↑ Loop back to Step 3 (Authority Review) until APPROVED
+          </div>
+
+          <div style="margin-top: 25px; width: 90%; max-width: 700px">
+            <div class="rect-node" style="border-color: #44cc88">
+              <span class="node-tag tag-authority">AUTHORITY</span>
+              <h3>🏆 Final: Certificate Issuance</h3>
+              <p>
+                Once approved, the authority generates the official certificate.
+                Admin team downloads it from the portal, verifies details, and
+                prepares the client delivery package.
+              </p>
+            </div>
+          </div>
+
+          <h3
+            style="
+              color: #00d4aa;
+              margin: 30px 0 15px;
+              font-size: 1.1em;
+              width: 90%;
+              max-width: 700px;
+            "
+          >
+            📊 Common Rejection Reasons (by frequency)
+          </h3>
+          <div style="width: 90%; max-width: 700px">
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Area Calculation Errors</span><span>35%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 35%;
+                    background: linear-gradient(90deg, #cc4444, #cc6644);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Drawing Format / Standard Issues</span><span>25%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 25%;
+                    background: linear-gradient(90deg, #cc8844, #ccaa44);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Missing Documents</span><span>15%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 15%;
+                    background: linear-gradient(90deg, #4488cc, #44aacc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Unit Numbering / Naming Mismatch</span><span>12%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 12%;
+                    background: linear-gradient(90deg, #8844cc, #aa44cc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Boundary / Setback Discrepancy</span><span>8%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 8%;
+                    background: linear-gradient(90deg, #44cc88, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Other (FAR, common area, coordinates)</span
+                ><span>5%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 5%;
+                    background: linear-gradient(90deg, #cccc44, #aacc44);
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== FINANCIAL FLOW ====== -->
+      <div class="section" id="sec-financial">
+        <h2 class="section-title">💰 Financial Flow — Money In & Money Out</h2>
+        <p class="section-subtitle">
+          Tracking revenue, costs, and payment milestones across the project
+          lifecycle
+        </p>
+
+        <div class="fin-legend">
+          <div class="fin-legend-item">
+            <div class="fin-dot" style="background: #44cc88"></div>
+            Revenue (Money In)
+          </div>
+          <div class="fin-legend-item">
+            <div class="fin-dot" style="background: #cc4444"></div>
+            Cost (Money Out)
+          </div>
+          <div class="fin-legend-item">
+            <div class="fin-dot" style="background: #4488cc"></div>
+            Milestone / Trigger
+          </div>
+        </div>
+
+        <div class="fin-timeline">
+          <div class="fin-event income">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 2 — Agreement</div>
+              <h4>💵 Advance Payment from Client</h4>
+              <div class="fin-amount green">+30% of Contract Value</div>
+              <p>
+                Upon signing the contract/quotation, client pays 30% advance.
+                This covers initial costs and demonstrates commitment. Triggered
+                by confirmed Sale Order.
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event expense">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 4 — Authority Application</div>
+              <h4>🏛️ Authority Application Fees</h4>
+              <div class="fin-amount red">−AED 500 to AED 5,000</div>
+              <p>
+                Paid to DLD/ADM/RAK for the survey application. Fee depends on
+                type: AED 500 (land), AED 600 (villa/unit), AED 3,000
+                (building), AED 5,000 (common areas/component plan). Plus AED 20
+                knowledge + innovation fees.
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event expense">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 5–6 — Field Survey</div>
+              <h4>🚗 Field Operations Costs</h4>
+              <div class="fin-amount red">
+                −Variable (fuel, per diem, equipment wear)
+              </div>
+              <p>
+                Transportation costs for surveyors to reach the site (across
+                emirates), surveyor daily allowance, equipment depreciation,
+                drone operation costs, and consumables (batteries, etc.).
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event expense">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 7 — Office Processing</div>
+              <h4>💻 Labor Cost — CAD/GIS Processing</h4>
+              <div class="fin-amount red">−Labor hours × hourly rate</div>
+              <p>
+                The most significant internal cost. CAD draftsmen spend 2–7 days
+                processing data into drawings and reports. This is where time
+                tracking becomes critical for profitability analysis.
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event income">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 9 — Submission to Authority</div>
+              <h4>💵 Second Milestone Payment</h4>
+              <div class="fin-amount green">+40% of Contract Value</div>
+              <p>
+                When the survey report is submitted to the authority, client
+                pays the second milestone (40%). This is a key billing trigger —
+                proof of submission is provided to the client.
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event expense">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 9 — Rectification (if needed)</div>
+              <h4>🔧 Rectification Costs (Hidden Cost!)</h4>
+              <div class="fin-amount red">−Unplanned labor hours</div>
+              <p>
+                ⚠️ This is the biggest profitability killer. Each rectification
+                round requires CAD re-work, QA re-review, and admin
+                re-submission. These hours are rarely billed to the client but
+                cost the company real money. Tracking this in Odoo Timesheet is
+                critical.
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event income">
+            <div class="fin-card">
+              <div class="fin-phase">Phase 10 — Final Delivery</div>
+              <h4>💵 Final Payment & Project Close</h4>
+              <div class="fin-amount green">
+                +30% of Contract Value (Balance)
+              </div>
+              <p>
+                Upon certificate issuance and delivery of all documents to the
+                client, the remaining 30% balance is invoiced and collected.
+                Project is financially closed.
+              </p>
+            </div>
+          </div>
+
+          <div class="fin-event neutral">
+            <div class="fin-card">
+              <div class="fin-phase">Monthly / Quarterly</div>
+              <h4>📊 Overhead & Fixed Costs</h4>
+              <div class="fin-amount blue">−Monthly Operating Costs</div>
+              <p>
+                Office rent (multiple emirates), employee salaries (surveyors,
+                CAD, admin, management), equipment maintenance & calibration,
+                software licenses (AutoCAD, GIS), vehicle fleet, insurance,
+                visa/labor card costs, and utilities.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h3
+          style="
+            color: #00d4aa;
+            margin: 20px 0 15px;
+            font-size: 1.1em;
+            text-align: center;
+          "
+        >
+          📊 Typical Profitability Breakdown per Project
+        </h3>
+        <div style="max-width: 500px; margin: 0 auto">
+          <div class="kpi-bar-container">
+            <div class="kpi-bar-label">
+              <span>Revenue (100%)</span
+              ><span style="color: #44cc88">████████████████████</span>
+            </div>
+            <div class="kpi-bar" style="height: 20px">
+              <div
+                class="kpi-bar-fill"
+                style="width: 100%; background: #44cc88"
+              ></div>
+            </div>
+          </div>
+          <div class="kpi-bar-container">
+            <div class="kpi-bar-label">
+              <span>Labor Cost (Field + Office)</span><span>40–50%</span>
+            </div>
+            <div class="kpi-bar" style="height: 20px">
+              <div
+                class="kpi-bar-fill"
+                style="width: 45%; background: #cc4444"
+              ></div>
+            </div>
+          </div>
+          <div class="kpi-bar-container">
+            <div class="kpi-bar-label">
+              <span>Authority Fees (pass-through)</span><span>10–15%</span>
+            </div>
+            <div class="kpi-bar" style="height: 20px">
+              <div
+                class="kpi-bar-fill"
+                style="width: 12%; background: #cc8844"
+              ></div>
+            </div>
+          </div>
+          <div class="kpi-bar-container">
+            <div class="kpi-bar-label">
+              <span>Overhead Allocation</span><span>15–20%</span>
+            </div>
+            <div class="kpi-bar" style="height: 20px">
+              <div
+                class="kpi-bar-fill"
+                style="width: 18%; background: #4488cc"
+              ></div>
+            </div>
+          </div>
+          <div class="kpi-bar-container">
+            <div class="kpi-bar-label">
+              <span>Rectification Cost (unplanned)</span><span>5–10%</span>
+            </div>
+            <div class="kpi-bar" style="height: 20px">
+              <div
+                class="kpi-bar-fill"
+                style="width: 8%; background: #8844cc"
+              ></div>
+            </div>
+          </div>
+          <div class="kpi-bar-container">
+            <div class="kpi-bar-label">
+              <span style="color: #44cc88; font-weight: 700"
+                >Net Profit Margin</span
+              ><span style="color: #44cc88; font-weight: 700">15–25%</span>
+            </div>
+            <div class="kpi-bar" style="height: 20px">
+              <div
+                class="kpi-bar-fill"
+                style="
+                  width: 20%;
+                  background: linear-gradient(90deg, #00d4aa, #44cc88);
+                "
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== EQUIPMENT LIFECYCLE ====== -->
+      <div class="section" id="sec-equipment">
+        <h2 class="section-title">🔧 Equipment Lifecycle & Inventory Flow</h2>
+        <p class="section-subtitle">
+          How survey equipment moves through the organization
+        </p>
+
+        <div class="equip-flow">
+          <div class="equip-stage" style="border-top: 3px solid #44cc88">
+            <div class="eq-icon">🛒</div>
+            <h4>Procurement</h4>
+            <p>
+              Purchase equipment from authorized dealers (Leica, Trimble,
+              Topcon). Register serial number, warranty, purchase cost.
+            </p>
+          </div>
+          <div class="equip-arrow">→</div>
+          <div class="equip-stage" style="border-top: 3px solid #4488cc">
+            <div class="eq-icon">📦</div>
+            <h4>Inventory Registration</h4>
+            <p>
+              Add to inventory with serial tracking, assign category, set
+              calibration schedule, record initial calibration certificate.
+            </p>
+          </div>
+          <div class="equip-arrow">→</div>
+          <div class="equip-stage" style="border-top: 3px solid #8844cc">
+            <div class="eq-icon">📋</div>
+            <h4>Check-Out to Surveyor</h4>
+            <p>
+              PM assigns equipment to field task. Surveyor checks out equipment,
+              signs responsibility form, verifies calibration is current.
+            </p>
+          </div>
+          <div class="equip-arrow">→</div>
+          <div class="equip-stage" style="border-top: 3px solid #cc8844">
+            <div class="eq-icon">📍</div>
+            <h4>Field Usage</h4>
+            <p>
+              Equipment used on-site for survey. Usage hours logged. Any issues
+              or damage reported immediately.
+            </p>
+          </div>
+          <div class="equip-arrow">→</div>
+          <div class="equip-stage" style="border-top: 3px solid #cc4444">
+            <div class="eq-icon">📥</div>
+            <h4>Check-In & Inspection</h4>
+            <p>
+              Equipment returned, inspected for damage, cleaned. Usage hours
+              updated. Data downloaded from instrument.
+            </p>
+          </div>
+          <div class="equip-arrow">→</div>
+          <div class="equip-stage" style="border-top: 3px solid #cccc44">
+            <div class="eq-icon">🔧</div>
+            <h4>Maintenance & Calibration</h4>
+            <p>
+              Scheduled preventive maintenance. Annual calibration by certified
+              lab. Repair if damaged. Calibration cert renewed.
+            </p>
+          </div>
+          <div class="equip-arrow">→</div>
+          <div class="equip-stage" style="border-top: 3px solid #44cccc">
+            <div class="eq-icon">♻️</div>
+            <h4>Retire / Replace</h4>
+            <p>
+              End-of-life equipment disposed or traded in. Replacement procured.
+              Depreciation recorded in accounting.
+            </p>
+          </div>
+        </div>
+
+        <h3 style="color: #00d4aa; margin: 25px 0 15px; font-size: 1.1em">
+          📦 Key Survey Equipment Inventory
+        </h3>
+        <div class="equip-list">
+          <div class="equip-item">
+            <div class="ei-icon">📐</div>
+            <div>
+              <h4>Total Station</h4>
+              <p>
+                Precise angle/distance measurement for building and boundary
+                surveys
+              </p>
+              <div class="ei-cost">~AED 40,000–120,000 per unit</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">📡</div>
+            <div>
+              <h4>GNSS/GPS Receiver</h4>
+              <p>
+                Satellite-based positioning for control points and
+                georeferencing
+              </p>
+              <div class="ei-cost">~AED 50,000–150,000 per unit</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">🚁</div>
+            <div>
+              <h4>Survey Drone (UAV)</h4>
+              <p>
+                Aerial mapping and photography for large plots and master
+                communities
+              </p>
+              <div class="ei-cost">~AED 15,000–80,000 per unit</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">🔦</div>
+            <div>
+              <h4>3D Laser Scanner</h4>
+              <p>
+                High-density point cloud capture for complex interiors and
+                facades
+              </p>
+              <div class="ei-cost">~AED 100,000–300,000 per unit</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">📏</div>
+            <div>
+              <h4>Laser Distance Meter</h4>
+              <p>Quick room-by-room interior measurement tool</p>
+              <div class="ei-cost">~AED 500–3,000 per unit</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">🖥️</div>
+            <div>
+              <h4>CAD Workstations</h4>
+              <p>
+                High-performance computers running AutoCAD, Civil 3D, ArcGIS,
+                Revit
+              </p>
+              <div class="ei-cost">~AED 8,000–20,000 per station</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">🚗</div>
+            <div>
+              <h4>Survey Vehicles</h4>
+              <p>
+                SUVs/pickups for transporting surveyors and equipment to sites
+              </p>
+              <div class="ei-cost">~AED 80,000–150,000 per vehicle</div>
+            </div>
+          </div>
+          <div class="equip-item">
+            <div class="ei-icon">💿</div>
+            <div>
+              <h4>Software Licenses</h4>
+              <p>AutoCAD, Civil 3D, ArcGIS, Trimble Business Center, Revit</p>
+              <div class="ei-cost">~AED 10,000–50,000/year total</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== ODOO MODULE MAP ====== -->
+      <div class="section" id="sec-odoomap">
+        <h2 class="section-title">
+          ⚙️ Odoo Module Mapping — What Module Covers What
+        </h2>
+        <p class="section-subtitle">
+          Standard Odoo modules (green border) + Custom modules required (orange
+          border)
+        </p>
+
+        <div class="odoo-map">
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">🎯</div>
+              <div>
+                <h3>Odoo CRM</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 1</span>
+                <span class="odoo-phase-tag">Phase 2</span>
+              </div>
+              <ul class="odoo-features">
+                <li>
+                  Capture client inquiries as leads (phone, email, web form)
+                </li>
+                <li>Qualify leads by service type, emirate, project size</li>
+                <li>
+                  Pipeline stages: New → Qualified → Quotation → Won → Lost
+                </li>
+                <li>Auto-assign leads by emirate or service type</li>
+                <li>Track all client interactions (calls, emails, meetings)</li>
+                <li>Lead scoring based on project value and client history</li>
+                <li>Automated follow-up email sequences</li>
+                <li>Win/loss reporting and conversion analytics</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">💼</div>
+              <div>
+                <h3>Odoo Sales</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 2</span>
+              </div>
+              <ul class="odoo-features">
+                <li>
+                  Quotation templates per service type (Title Deed, Oqood, etc.)
+                </li>
+                <li>
+                  Line items: survey fees, authority fees, additional services
+                </li>
+                <li>Payment milestone terms (30/40/30 split)</li>
+                <li>Digital signature on quotations</li>
+                <li>Auto-create project when Sale Order is confirmed</li>
+                <li>Revenue recognition per milestone</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">📁</div>
+              <div>
+                <h3>Odoo Documents</h3>
+                <div class="odoo-type">Standard Module (Enterprise)</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 3</span>
+                <span class="odoo-phase-tag">Phase 7</span>
+                <span class="odoo-phase-tag">Phase 9</span>
+                <span class="odoo-phase-tag">Phase 10</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Folder structure: Client → Project → Document Type</li>
+                <li>Version control for drawings and reports</li>
+                <li>Tag documents by emirate, authority, status</li>
+                <li>Link documents to project tasks</li>
+                <li>Document approval workflows</li>
+                <li>Document checklist per service type</li>
+                <li>Auto-filing of email attachments</li>
+                <li>Archive and retrieval for completed projects</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">📋</div>
+              <div>
+                <h3>Odoo Project</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 1–10</span>
+                <span class="odoo-phase-tag">ALL PHASES</span>
+              </div>
+              <ul class="odoo-features">
+                <li>
+                  Project templates per service type with auto-generated tasks
+                </li>
+                <li>Kanban board showing all projects by stage</li>
+                <li>Gantt chart for timeline visualization</li>
+                <li>
+                  Task dependencies (Phase 7 can't start until Phase 6 complete)
+                </li>
+                <li>Automated task assignment based on roles</li>
+                <li>Deadline tracking with overdue alerts</li>
+                <li>Project dashboard by emirate, service type, status</li>
+                <li>Sub-tasks for detailed activity breakdown</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">📍</div>
+              <div>
+                <h3>Odoo Field Service</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 5</span>
+                <span class="odoo-phase-tag">Phase 6</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Schedule site visits and assign surveyors</li>
+                <li>Map view for geographic task planning</li>
+                <li>Mobile app for surveyors: view tasks, docs, record data</li>
+                <li>
+                  Custom digital worksheet (replaces paper site visit form)
+                </li>
+                <li>Time tracking per site visit</li>
+                <li>Client digital signature on completion</li>
+                <li>Photo capture and attachment</li>
+                <li>Equipment checklist before starting</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">⏱️</div>
+              <div>
+                <h3>Odoo Timesheet</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 5–10</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Log hours against specific project tasks</li>
+                <li>Timer-based tracking (start/stop)</li>
+                <li>
+                  Track field hours vs. office hours vs. rectification hours
+                </li>
+                <li>Compare estimated vs. actual hours per project</li>
+                <li>Team utilization reports</li>
+                <li>Cost analysis per project (hours × rate)</li>
+                <li>Identify most time-consuming phases</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">💰</div>
+              <div>
+                <h3>Odoo Accounting + Invoicing</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 2</span>
+                <span class="odoo-phase-tag">Phase 4</span>
+                <span class="odoo-phase-tag">Phase 9</span>
+                <span class="odoo-phase-tag">Phase 10</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Milestone-based auto-invoicing (30/40/30)</li>
+                <li>UAE VAT (5%) compliant invoicing</li>
+                <li>Track authority fee payments as expenses</li>
+                <li>Aged receivables by client</li>
+                <li>Profitability reporting per project/service/client</li>
+                <li>Bank reconciliation</li>
+                <li>WPS (Wage Protection System) payroll file generation</li>
+                <li>Multi-currency for international clients</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">📦</div>
+              <div>
+                <h3>Odoo Inventory + Maintenance</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 5</span>
+                <span class="odoo-phase-tag">Phase 6</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Serial-tracked equipment inventory</li>
+                <li>Check-out / check-in tracking per surveyor</li>
+                <li>Scheduled calibration and maintenance</li>
+                <li>Calibration certificate expiry alerts</li>
+                <li>Equipment availability checking</li>
+                <li>Consumables stock with reorder rules</li>
+                <li>Depreciation tracking linked to accounting</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">👥</div>
+              <div>
+                <h3>Odoo HR / Payroll / Attendance</h3>
+                <div class="odoo-type">Standard Module</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">All Phases</span>
+                <span class="odoo-phase-tag">Back-office</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Employee profiles with visa/labor card expiry tracking</li>
+                <li>UAE-specific payroll (housing, transport allowances)</li>
+                <li>End-of-service gratuity calculation</li>
+                <li>Leave management with UAE public holidays</li>
+                <li>Attendance tracking for office and field staff</li>
+                <li>
+                  Professional certification tracking (DLD surveyor license)
+                </li>
+                <li>Recruitment pipeline for new surveyors</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- CUSTOM MODULES -->
+          <div class="odoo-card odoo-custom">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">🏛️</div>
+              <div>
+                <h3>Authority Submission Tracker</h3>
+                <div class="odoo-type">⚡ CUSTOM MODULE</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 4</span>
+                <span class="odoo-phase-tag">Phase 9</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Track submissions to DLD, ADM, RAK, DSO, DDA, Trakhees</li>
+                <li>Submission reference number tracking</li>
+                <li>
+                  Status pipeline: Submitted → Under Review → Comments →
+                  Approved
+                </li>
+                <li>
+                  Comment logging with category (area error, format, etc.)
+                </li>
+                <li>Rectification task auto-creation from comments</li>
+                <li>Re-submission tracking with version history</li>
+                <li>SLA dashboard: days pending per authority</li>
+                <li>
+                  Approval rate analytics per authority & per service type
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card odoo-custom">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">🌐</div>
+              <div>
+                <h3>Client Portal</h3>
+                <div class="odoo-type">⚡ CUSTOM MODULE</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 1–10</span>
+                <span class="odoo-phase-tag">Client-Facing</span>
+              </div>
+              <ul class="odoo-features">
+                <li>Clients log in to see all their projects and statuses</li>
+                <li>Real-time project stage tracking (like order tracking)</li>
+                <li>Upload documents directly to the portal</li>
+                <li>Download completed deliverables (reports, drawings)</li>
+                <li>View and pay invoices online</li>
+                <li>Submit new service requests via portal form</li>
+                <li>Message thread with project team</li>
+                <li>Reduces phone calls and WhatsApp inquiries by 50%+</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="odoo-card odoo-custom">
+            <div class="odoo-card-top">
+              <div class="odoo-icon">📐</div>
+              <div>
+                <h3>Survey Project Configuration</h3>
+                <div class="odoo-type">⚡ CUSTOM MODULE</div>
+              </div>
+            </div>
+            <div class="odoo-card-body">
+              <div class="odoo-phase-tags">
+                <span class="odoo-phase-tag">Phase 3–7</span>
+                <span class="odoo-phase-tag">Industry-Specific</span>
+              </div>
+              <ul class="odoo-features">
+                <li>
+                  Property registry: plot details, affection plan, coordinates
+                </li>
+                <li>Building registry: floors, units, areas, use type</li>
+                <li>Area calculation engine (GFA, BUA, sellable, common)</li>
+                <li>Unit numbering auto-generation per authority standard</li>
+                <li>FAR calculation and compliance check</li>
+                <li>Drawing revision tracking (DWG file versions)</li>
+                <li>Authority-specific document templates and checklists</li>
+                <li>Integration with AutoCAD via API for area import</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== KPI DASHBOARD ====== -->
+      <div class="section" id="sec-kpis">
+        <h2 class="section-title">📊 KPI Dashboard — Metrics That Matter</h2>
+        <p class="section-subtitle">
+          Key performance indicators a UAE survey company should track after
+          Odoo implementation
+        </p>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h4>🏗️ Project Delivery Metrics</h4>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>On-Time Delivery Rate</span><span>Target: 85%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 72%;
+                    background: linear-gradient(90deg, #cc8844, #ccaa44);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Avg Days to Complete (Title Deed)</span
+                ><span>Target: <12 days</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 60%;
+                    background: linear-gradient(90deg, #4488cc, #44aacc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Avg Days to Complete (Oqood)</span
+                ><span>Target: <8 days</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 50%;
+                    background: linear-gradient(90deg, #44cc88, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Projects in Progress (Current)</span
+                ><span>45 active</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 45%;
+                    background: linear-gradient(90deg, #8844cc, #aa44cc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-note">
+              Tracked via: Odoo Project + Custom Submission Tracker
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>🏛️ Authority Submission Metrics</h4>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>First-Submission Approval Rate</span
+                ><span>Target: 70%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 58%;
+                    background: linear-gradient(90deg, #cc4444, #cc6644);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Avg Rectification Rounds</span><span>Target: <1.3</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 40%;
+                    background: linear-gradient(90deg, #cc8844, #ccaa44);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Avg Days Pending at Authority</span
+                ><span>Target: <7 days</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 55%;
+                    background: linear-gradient(90deg, #4488cc, #44aacc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Submissions Overdue (>15 days)</span
+                ><span>Target: 0</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 15%;
+                    background: linear-gradient(90deg, #cc4444, #cc4444);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-note">
+              Tracked via: Custom Authority Submission Tracker Module
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>👷 Team Utilization Metrics</h4>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Surveyor Utilization Rate</span><span>Target: 75%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 68%;
+                    background: linear-gradient(90deg, #4488cc, #44aacc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>CAD Team Utilization Rate</span><span>Target: 80%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 76%;
+                    background: linear-gradient(90deg, #8844cc, #aa44cc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Billable vs Non-Billable Hours</span
+                ><span>Target: 70/30</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 62%;
+                    background: linear-gradient(90deg, #44cc88, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Rectification Hours (waste)</span
+                ><span>Target: <10%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 18%;
+                    background: linear-gradient(90deg, #cc4444, #cc6644);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-note">
+              Tracked via: Odoo Timesheet + Odoo Project
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>💰 Financial Metrics</h4>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Revenue This Month</span><span>AED 450K</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 75%;
+                    background: linear-gradient(90deg, #44cc88, #00d4aa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Outstanding Receivables</span><span>AED 180K</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 40%;
+                    background: linear-gradient(90deg, #cc8844, #ccaa44);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Avg Project Profit Margin</span><span>Target: 20%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 22%;
+                    background: linear-gradient(90deg, #00d4aa, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Invoices Overdue (>30 days)</span><span>AED 65K</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 14%;
+                    background: linear-gradient(90deg, #cc4444, #cc6644);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-note">Tracked via: Odoo Accounting + Invoicing</div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>📞 Sales & Client Metrics</h4>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Lead-to-Win Conversion Rate</span
+                ><span>Target: 35%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 30%;
+                    background: linear-gradient(90deg, #44cc88, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Avg Quote-to-Close Days</span><span>Target: <5 days</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 45%;
+                    background: linear-gradient(90deg, #4488cc, #44aacc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Repeat Client Rate</span><span>Target: 60%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 55%;
+                    background: linear-gradient(90deg, #8844cc, #aa44cc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Client Satisfaction Score</span><span>Target: 4.5/5</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 82%;
+                    background: linear-gradient(90deg, #00d4aa, #44cc88);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-note">Tracked via: Odoo CRM + Odoo Survey</div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>🔧 Equipment & Compliance Metrics</h4>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Equipment Availability Rate</span
+                ><span>Target: 95%+</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 88%;
+                    background: linear-gradient(90deg, #44cc88, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Calibration Compliance</span><span>Target: 100%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 92%;
+                    background: linear-gradient(90deg, #00d4aa, #44ccaa);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Visa/License Expiry Compliance</span
+                ><span>Target: 100%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 96%;
+                    background: linear-gradient(90deg, #4488cc, #44aacc);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-bar-container">
+              <div class="kpi-bar-label">
+                <span>Equipment Downtime</span><span>Target: <2%</span>
+              </div>
+              <div class="kpi-bar">
+                <div
+                  class="kpi-bar-fill"
+                  style="
+                    width: 5%;
+                    background: linear-gradient(90deg, #cc4444, #cc6644);
+                  "
+                ></div>
+              </div>
+            </div>
+            <div class="kpi-note">
+              Tracked via: Odoo Inventory + Maintenance + HR
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== DAY-IN-LIFE ====== -->
+      <div class="section" id="sec-daylife">
+        <h2 class="section-title">
+          🕐 A Day in the Life — Typical Working Day
+        </h2>
+        <p class="section-subtitle">
+          How each team member's day looks across a typical 10-hour workday
+          (7:30 AM – 5:30 PM)
+        </p>
+
+        <div class="day-legend">
+          <div class="day-legend-item">
+            <div class="dl-dot" style="background: #1a3040"></div>
+            Field Work
+          </div>
+          <div class="day-legend-item">
+            <div class="dl-dot" style="background: #301a40"></div>
+            Office / CAD Work
+          </div>
+          <div class="day-legend-item">
+            <div class="dl-dot" style="background: #1a4030"></div>
+            Meetings / Calls
+          </div>
+          <div class="day-legend-item">
+            <div class="dl-dot" style="background: #403020"></div>
+            Admin / Portal Work
+          </div>
+          <div class="day-legend-item">
+            <div class="dl-dot" style="background: #303020"></div>
+            Travel
+          </div>
+          <div class="day-legend-item">
+            <div class="dl-dot" style="background: #202030"></div>
+            Break
+          </div>
+        </div>
+
+        <div class="day-timeline">
+          <!-- Field Surveyor -->
+          <div class="day-role-section">
+            <div class="day-role-header" style="border-color: #4488cc">
+              <div>
+                <h3>📐 Field Surveyor</h3>
+                <p>
+                  Spends 60-70% of day in the field, rest on data transfer and
+                  preparation
+                </p>
+              </div>
+            </div>
+            <div class="day-hours">
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">7:30</div>
+                <div class="hour-task">Check daily assignments in Odoo</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">7:45</div>
+                <div class="hour-task">Review site docs, check equipment</div>
+              </div>
+              <div class="day-hour-block dh-travel">
+                <div class="hour-time">8:00</div>
+                <div class="hour-task">Travel to Site #1 (Deira)</div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">8:45</div>
+                <div class="hour-task">
+                  Set up Total Station, establish control
+                </div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">9:30</div>
+                <div class="hour-task">Survey building floors 1-5</div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">10:30</div>
+                <div class="hour-task">Survey common areas, parking</div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">11:30</div>
+                <div class="hour-task">Complete measurements, take photos</div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">12:00</div>
+                <div class="hour-task">Client sign-off, pack equipment</div>
+              </div>
+              <div class="day-hour-block dh-break">
+                <div class="hour-time">12:30</div>
+                <div class="hour-task">Lunch break</div>
+              </div>
+              <div class="day-hour-block dh-travel">
+                <div class="hour-time">1:15</div>
+                <div class="hour-task">Travel to Site #2 (JLT)</div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">2:00</div>
+                <div class="hour-task">Survey villa plot boundaries</div>
+              </div>
+              <div class="day-hour-block dh-field">
+                <div class="hour-time">3:00</div>
+                <div class="hour-task">GNSS control points, site photos</div>
+              </div>
+              <div class="day-hour-block dh-travel">
+                <div class="hour-time">3:45</div>
+                <div class="hour-task">Return to office</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">4:30</div>
+                <div class="hour-task">Download data, brief CAD team</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">5:00</div>
+                <div class="hour-task">Log timesheets, check-in equipment</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CAD Draftsman -->
+          <div class="day-role-section">
+            <div class="day-role-header" style="border-color: #8844cc">
+              <div>
+                <h3>💻 CAD Draftsman</h3>
+                <p>Spends 90% of day in AutoCAD — the office powerhouse</p>
+              </div>
+            </div>
+            <div class="day-hours">
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">8:00</div>
+                <div class="hour-task">Check task queue in Odoo Project</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">8:15</div>
+                <div class="hour-task">Continue Project A: Floor plan G+1</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">9:00</div>
+                <div class="hour-task">Draft floor plan G+2, G+3</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">10:00</div>
+                <div class="hour-task">Area calculations in Excel</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">10:45</div>
+                <div class="hour-task">Project B: Fix DLD comments</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">11:30</div>
+                <div class="hour-task">Rectify area schedule errors</div>
+              </div>
+              <div class="day-hour-block dh-break">
+                <div class="hour-time">12:30</div>
+                <div class="hour-task">Lunch break</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">1:15</div>
+                <div class="hour-task">Project C: Color cut sheets</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">2:15</div>
+                <div class="hour-task">Project A: Common area plan</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">3:00</div>
+                <div class="hour-task">Brief from surveyor (new site data)</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">3:30</div>
+                <div class="hour-task">Process new raw data into CAD</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">4:30</div>
+                <div class="hour-task">Compile survey report draft</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">5:00</div>
+                <div class="hour-task">Log timesheets, update task status</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin / Registration -->
+          <div class="day-role-section">
+            <div class="day-role-header" style="border-color: #cc4444">
+              <div>
+                <h3>📤 Admin / Registration Officer</h3>
+                <p>
+                  Juggles between client follow-ups, portal submissions, and
+                  document management
+                </p>
+              </div>
+            </div>
+            <div class="day-hours">
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">8:00</div>
+                <div class="hour-task">Check DLD portal for status updates</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">8:30</div>
+                <div class="hour-task">Download approved certificates (2)</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">9:00</div>
+                <div class="hour-task">Review DLD comments on Project X</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">9:30</div>
+                <div class="hour-task">Call client: request missing docs</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">10:00</div>
+                <div class="hour-task">Upload new submission to ADM</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">10:45</div>
+                <div class="hour-task">Pay authority fees for 3 projects</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">11:15</div>
+                <div class="hour-task">Coordinate site access with client</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">11:45</div>
+                <div class="hour-task">
+                  File received documents to project folders
+                </div>
+              </div>
+              <div class="day-hour-block dh-break">
+                <div class="hour-time">12:30</div>
+                <div class="hour-task">Lunch break</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">1:15</div>
+                <div class="hour-task">
+                  Re-submit corrected Project Y to DLD
+                </div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">2:00</div>
+                <div class="hour-task">Generate invoices for 4 projects</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">2:45</div>
+                <div class="hour-task">Follow up on 3 pending payments</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">3:15</div>
+                <div class="hour-task">
+                  Prepare delivery packages (certs + docs)
+                </div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">4:00</div>
+                <div class="hour-task">Update submission tracker statuses</div>
+              </div>
+              <div class="day-hour-block dh-admin">
+                <div class="hour-time">5:00</div>
+                <div class="hour-task">End-of-day report to PM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Manager -->
+          <div class="day-role-section">
+            <div class="day-role-header" style="border-color: #44cccc">
+              <div>
+                <h3>📊 Project Manager / Operations Head</h3>
+                <p>
+                  Orchestrates everything — people, projects, priorities, and
+                  problems
+                </p>
+              </div>
+            </div>
+            <div class="day-hours">
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">7:30</div>
+                <div class="hour-task">Review Odoo dashboard: all projects</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">8:00</div>
+                <div class="hour-task">Morning standup with team</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">8:30</div>
+                <div class="hour-task">Assign surveyors to today's sites</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">9:00</div>
+                <div class="hour-task">
+                  Call with developer (new 50-unit project)
+                </div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">9:45</div>
+                <div class="hour-task">Prepare quotation for new project</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">10:30</div>
+                <div class="hour-task">
+                  Review QA report, approve submissions
+                </div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">11:15</div>
+                <div class="hour-task">
+                  Escalation: DLD comment on large project
+                </div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">12:00</div>
+                <div class="hour-task">Resource planning for next week</div>
+              </div>
+              <div class="day-hour-block dh-break">
+                <div class="hour-time">12:30</div>
+                <div class="hour-task">Lunch</div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">1:15</div>
+                <div class="hour-task">
+                  Client meeting: project status update
+                </div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">2:30</div>
+                <div class="hour-task">Check overdue tasks, send reminders</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">3:15</div>
+                <div class="hour-task">
+                  Review financial: outstanding invoices
+                </div>
+              </div>
+              <div class="day-hour-block dh-meeting">
+                <div class="hour-time">4:00</div>
+                <div class="hour-task">1-on-1 with senior surveyor</div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">4:30</div>
+                <div class="hour-task">
+                  Update project statuses, close 2 projects
+                </div>
+              </div>
+              <div class="day-hour-block dh-office">
+                <div class="hour-time">5:00</div>
+                <div class="hour-task">Plan tomorrow's priorities</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showSection(name) {
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-tab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("sec-" + name).classList.add("active");
+        event.target.classList.add("active");
+        window.scrollTo({ top: 180, behavior: "smooth" });
+      }
+
+      // Animate KPI bars on scroll
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.querySelectorAll(".kpi-bar-fill").forEach((bar) => {
+                const w = bar.style.width;
+                bar.style.width = "0%";
+                setTimeout(() => {
+                  bar.style.width = w;
+                }, 100);
+              });
+            }
+          });
+        },
+        { threshold: 0.2 },
+      );
+
+      document
+        .querySelectorAll(".kpi-card, .rect-flow")
+        .forEach((el) => observer.observe(el));
+
+      // Animate cards on scroll
+      const cardObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(
+          ".odoo-card, .equip-stage, .equip-item, .fin-card, .service-card, .rect-node, .day-role-section",
+        )
+        .forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(20px)";
+          el.style.transition = "all 0.5s ease";
+          cardObserver.observe(el);
+        });
+    </script>
+  </body>
+</html>
