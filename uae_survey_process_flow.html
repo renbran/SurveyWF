@@ -357,9 +357,9 @@
 
         .swimlane-grid {
             display: grid;
-            grid-template-columns: 150px repeat(10, 220px);
+            grid-template-columns: 180px repeat(10, 220px);
             gap: 2px;
-            min-width: 2400px;
+            min-width: 2580px;
         }
 
         .swim-header {
@@ -373,6 +373,16 @@
             position: sticky;
             top: 70px;
             z-index: 10;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .swim-header-corner {
+            position: sticky;
+            top: 70px;
+            left: 0;
+            z-index: 20;
         }
 
         .swim-role-header {
@@ -388,6 +398,7 @@
             position: sticky;
             left: 0;
             z-index: 5;
+            white-space: nowrap;
         }
 
         .swim-cell {
@@ -1460,7 +1471,7 @@
             <div class="swimlane-container">
                 <div class="swimlane-grid">
                     <!-- Headers -->
-                    <div class="swim-header">ROLE / TEAM</div>
+                    <div class="swim-header swim-header-corner">ROLE / TEAM</div>
                     <div class="swim-header">P1: Inquiry</div>
                     <div class="swim-header">P2: Quotation</div>
                     <div class="swim-header">P3: Doc Collection</div>
