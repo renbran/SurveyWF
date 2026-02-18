@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Development — End-to-End Workflow &amp; Odoo Mapping</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1a1f4e 0%, #3b0d66 50%, #55144e 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid #c044ff;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(192,68,255,0.05) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .header h1 { font-size: 2.2em; color: #c044ff; margin-bottom: 10px; position: relative; z-index: 1; }
+        .header p  { font-size: 1.1em; color: #8899bb; position: relative; z-index: 1; }
+
+        /* ===== NAVIGATION ===== */
+        .nav-tabs {
+            display: flex; justify-content: center; gap: 8px; padding: 16px 20px;
+            background: #0d1230; flex-wrap: wrap;
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid #1a2055;
+        }
+        .nav-tab {
+            padding: 10px 20px; border: 1px solid #2a3070; border-radius: 25px;
+            background: transparent; color: #7788aa; cursor: pointer;
+            font-size: 0.9em; transition: all 0.3s ease; text-decoration: none;
+        }
+        .nav-tab:hover, .nav-tab.active {
+            background: linear-gradient(135deg, #c044ff, #6644cc);
+            color: #fff; border-color: #c044ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(192,68,255,0.3);
+        }
+        .home-link {
+            padding: 10px 20px; border: 1px solid #2a3070; border-radius: 25px;
+            background: transparent; color: #7788aa; cursor: pointer;
+            font-size: 0.9em; transition: all 0.3s ease; text-decoration: none;
+        }
+        .home-link:hover {
+            background: linear-gradient(135deg, #00d4aa, #0088cc);
+            color: #fff; border-color: #00d4aa;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .section-title { text-align: center; font-size: 1.8em; color: #c044ff; margin: 30px 0 10px; }
+        .section-subtitle { text-align: center; color: #6677aa; margin-bottom: 30px; font-size: 1em; }
+
+        /* ===== OVERVIEW CARDS ===== */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; padding: 20px 0;
+        }
+        .overview-card {
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070; border-radius: 16px;
+            padding: 25px; transition: all 0.3s;
+        }
+        .overview-card:hover {
+            border-color: #c044ff44;
+            box-shadow: 0 5px 20px rgba(192,68,255,0.1);
+            transform: translateY(-3px);
+        }
+        .overview-card .card-icon { font-size: 2.5em; margin-bottom: 12px; display: block; }
+        .overview-card h3 { color: #c044ff; font-size: 1.15em; margin-bottom: 8px; }
+        .overview-card p { color: #8899bb; font-size: 0.88em; line-height: 1.6; }
+        .overview-card .stat {
+            display: inline-block; margin-top: 10px; padding: 4px 12px;
+            border-radius: 12px; font-size: 0.75em; font-weight: 600;
+            background: rgba(192,68,255,0.12); color: #c044ff; border: 1px solid #c044ff44;
+        }
+
+        /* ===== PHASE FLOW (MASTER) ===== */
+        .master-flow { position: relative; padding: 20px 0; }
+        .flow-line {
+            position: absolute; left: 50%; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #c044ff, #6644cc, #0088cc, #c044ff);
+            transform: translateX(-50%); z-index: 0;
+        }
+        .phase-block {
+            position: relative; display: flex; align-items: flex-start;
+            margin-bottom: 30px; z-index: 1;
+        }
+        .phase-block:nth-child(odd) { flex-direction: row; }
+        .phase-block:nth-child(even) { flex-direction: row-reverse; }
+        .phase-block:nth-child(odd) .phase-card { margin-right: auto; margin-left: 20px; }
+        .phase-block:nth-child(even) .phase-card { margin-left: auto; margin-right: 20px; }
+
+        .phase-card {
+            width: 45%; background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070; border-radius: 16px; padding: 25px;
+            transition: all 0.4s ease; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        .phase-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #c044ff, #6644cc);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .phase-card:hover::before, .phase-card.expanded::before { opacity: 1; }
+        .phase-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(192,68,255,0.15);
+            border-color: #c044ff44;
+        }
+        .phase-number {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2em; font-weight: bold; z-index: 2;
+            border: 3px solid; transition: all 0.3s;
+        }
+        .phase-header { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
+        .phase-icon { font-size: 2em; min-width: 50px; text-align: center; }
+        .phase-title { font-size: 1.15em; font-weight: 700; color: #fff; }
+        .phase-duration { font-size: 0.8em; color: #c044ff; margin-top: 3px; }
+        .phase-summary { color: #8899bb; font-size: 0.9em; line-height: 1.6; margin-bottom: 10px; }
+        .phase-details {
+            display: none; margin-top: 15px; padding-top: 15px;
+            border-top: 1px solid #2a3070;
+        }
+        .phase-card.expanded .phase-details {
+            display: block; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .detail-section { margin-bottom: 15px; }
+        .detail-section h4 {
+            color: #c044ff; font-size: 0.85em; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .detail-list { list-style: none; padding: 0; }
+        .detail-list li {
+            padding: 5px 0 5px 20px; position: relative;
+            color: #99aabb; font-size: 0.85em; line-height: 1.5;
+        }
+        .detail-list li::before { content: '▸'; position: absolute; left: 0; color: #c044ff; }
+        .expand-hint { text-align: center; color: #4466aa; font-size: 0.8em; margin-top: 8px; }
+
+        /* ===== ODOO MODULE MAP ===== */
+        .odoo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px; padding: 20px 0;
+        }
+        .odoo-card {
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070; border-radius: 16px;
+            overflow: hidden; transition: all 0.3s;
+        }
+        .odoo-card:hover {
+            border-color: #c044ff44;
+            box-shadow: 0 5px 20px rgba(192,68,255,0.1);
+        }
+        .odoo-card-header {
+            padding: 18px 20px;
+            background: linear-gradient(135deg, rgba(192,68,255,0.1), rgba(102,68,204,0.1));
+            border-bottom: 1px solid #2a3070;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .odoo-card-header .mod-icon { font-size: 1.8em; }
+        .odoo-card-header h3 { color: #c044ff; font-size: 1.1em; }
+        .odoo-card-header .mod-tag {
+            margin-left: auto; padding: 3px 10px; border-radius: 12px;
+            font-size: 0.7em; font-weight: 700;
+            background: rgba(192,68,255,0.15); color: #c044ff; border: 1px solid #c044ff44;
+        }
+        .odoo-card-body { padding: 16px 20px; }
+        .odoo-feature {
+            display: flex; gap: 10px; padding: 8px 0;
+            border-bottom: 1px solid #1a2050; align-items: flex-start;
+        }
+        .odoo-feature:last-child { border-bottom: none; }
+        .odoo-feature .feat-dot {
+            width: 8px; height: 8px; min-width: 8px; border-radius: 50%;
+            background: #c044ff; margin-top: 6px;
+        }
+        .odoo-feature .feat-text { color: #99aabb; font-size: 0.85em; line-height: 1.5; }
+        .odoo-feature .feat-text strong { color: #dde; }
+
+        /* ===== SWIMLANE ===== */
+        .swimlane-container { overflow-x: auto; padding: 20px 0; }
+        .swimlane-grid {
+            display: grid;
+            grid-template-columns: 180px repeat(8, 240px);
+            gap: 2px; min-width: 2120px;
+        }
+        .swim-header {
+            background: linear-gradient(135deg, #c044ff, #6644cc);
+            color: #fff; padding: 12px 8px; text-align: center;
+            font-weight: 700; font-size: 0.8em;
+            border-radius: 8px 8px 0 0;
+            position: sticky; top: 56px; z-index: 10;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .swim-header-corner { position: sticky; top: 56px; left: 0; z-index: 20; }
+        .swim-role-header {
+            background: #131842; border: 1px solid #2a3070;
+            padding: 12px 10px; color: #c044ff; font-weight: 600;
+            font-size: 0.85em; display: flex; align-items: center; gap: 8px;
+            position: sticky; left: 0; z-index: 5; white-space: nowrap;
+        }
+        .swim-cell {
+            background: #0d1230; border: 1px solid #1a2050;
+            padding: 8px; min-height: 80px;
+        }
+        .swim-task {
+            background: linear-gradient(145deg, #1a2055, #222870);
+            border: 1px solid #3a4090; border-radius: 8px;
+            padding: 8px 10px; margin: 4px 0; font-size: 0.75em;
+            color: #ccd; cursor: default; transition: all 0.2s;
+        }
+        .swim-task:hover {
+            border-color: #c044ff;
+            box-shadow: 0 2px 10px rgba(192,68,255,0.2);
+        }
+        .swim-task .task-name { font-weight: 600; color: #fff; margin-bottom: 3px; }
+        .swim-task .task-tool { color: #c044ff; font-size: 0.9em; }
+
+        /* ===== DOCUMENT TABLE ===== */
+        .doc-table-wrap { overflow-x: auto; padding: 20px 0; }
+        .doc-table {
+            width: 100%; border-collapse: collapse; min-width: 800px;
+        }
+        .doc-table th {
+            background: linear-gradient(135deg, #c044ff, #6644cc);
+            color: #fff; padding: 12px 16px; text-align: left;
+            font-size: 0.85em; font-weight: 700;
+            position: sticky; top: 56px; z-index: 10;
+        }
+        .doc-table td {
+            padding: 10px 16px; border-bottom: 1px solid #1a2050;
+            font-size: 0.85em; color: #99aabb;
+        }
+        .doc-table tr:hover td { background: #131842; }
+        .doc-table .phase-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 10px;
+            font-size: 0.8em; font-weight: 600;
+            background: rgba(192,68,255,0.12); color: #c044ff;
+        }
+
+        /* ===== ROLE TAGS ===== */
+        .role-tag {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 0.7em; font-weight: 600; margin: 2px;
+        }
+        .role-sales    { background: #1a3a2a; color: #44cc88; }
+        .role-pm       { background: #1a2a3a; color: #4488cc; }
+        .role-legal    { background: #3a2a1a; color: #cc8844; }
+        .role-finance  { background: #3a1a1a; color: #cc4444; }
+        .role-design   { background: #2a1a3a; color: #8844cc; }
+        .role-constr   { background: #1a3a3a; color: #44cccc; }
+        .role-mktg     { background: #3a1a2a; color: #cc4488; }
+        .role-facility { background: #2a3a1a; color: #88cc44; }
+
+        /* ===== KPI GRID ===== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px; padding: 20px 0;
+        }
+        .kpi-card {
+            background: linear-gradient(145deg, #131842, #1a2055);
+            border: 1px solid #2a3070; border-radius: 14px;
+            padding: 20px; text-align: center; transition: all 0.3s;
+        }
+        .kpi-card:hover {
+            border-color: #c044ff44;
+            box-shadow: 0 4px 15px rgba(192,68,255,0.1);
+        }
+        .kpi-value { font-size: 2em; font-weight: 800; color: #c044ff; }
+        .kpi-label { color: #8899bb; font-size: 0.82em; margin-top: 6px; }
+        .kpi-source { color: #4466aa; font-size: 0.72em; margin-top: 4px; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center; padding: 30px 20px;
+            border-top: 1px solid #1a2055; color: #2a3a5a; font-size: 0.82em;
+        }
+        .footer strong { color: #c044ff; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .phase-card { width: 90% !important; }
+            .phase-block:nth-child(odd) .phase-card,
+            .phase-block:nth-child(even) .phase-card { margin: 0 auto; }
+            .flow-line { display: none; }
+            .phase-number { display: none; }
+            .header h1 { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🏗️ Real Estate Development Company</h1>
+        <p>End-to-End Workflow — From Land Acquisition to Property Management · Odoo Integration Map</p>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-tabs">
+        <a class="home-link" href="index.html">🏠 Home</a>
+        <button class="nav-tab active" onclick="showSection('overview')">📊 Overview</button>
+        <button class="nav-tab" onclick="showSection('master')">🔄 Phase Flow</button>
+        <button class="nav-tab" onclick="showSection('odoo')">⚙️ Odoo Modules</button>
+        <button class="nav-tab" onclick="showSection('swimlane')">🏊 Swimlane</button>
+        <button class="nav-tab" onclick="showSection('documents')">📄 Documents</button>
+        <button class="nav-tab" onclick="showSection('kpi')">📈 KPIs</button>
+    </div>
+
+    <div class="container">
+
+        <!-- ====== SECTION: OVERVIEW ====== -->
+        <div class="section active" id="sec-overview">
+            <h2 class="section-title">Industry Overview</h2>
+            <p class="section-subtitle">Real estate development lifecycle — 8 interconnected phases managed end-to-end in Odoo 17</p>
+
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <span class="card-icon">🌍</span>
+                    <h3>P1: Land Acquisition &amp; Due Diligence</h3>
+                    <p>Identify plots, run feasibility analysis, verify title deeds via DLD/Municipality, negotiate purchase, execute SPA with escrow. Odoo CRM pipeline tracks each opportunity from sourcing to signed deal.</p>
+                    <span class="stat">CRM · Purchase · Documents</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">📐</span>
+                    <h3>P2: Design &amp; Approvals</h3>
+                    <p>Appoint consultants (architect, MEP, structural), develop concept → schematic → detailed design. Submit to Municipality/Civil Defense for NOC and building permit. Track submittals in Odoo Project with approval checklists.</p>
+                    <span class="stat">Project · Purchase · Approvals</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">🏛️</span>
+                    <h3>P3: RERA Registration &amp; Escrow</h3>
+                    <p>Register project with RERA, open escrow account (trust account), obtain Oqood readiness. Configure Odoo Accounting with a dedicated escrow journal and bank reconciliation for buyer deposits.</p>
+                    <span class="stat">Accounting · Documents</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">🏗️</span>
+                    <h3>P4: Pre-Construction &amp; Tendering</h3>
+                    <p>Prepare BOQ, float tenders for main contractor and sub-contractors, evaluate bids, award contracts. Odoo Purchase handles RFQs, vendor comparison, and PO generation with payment milestones.</p>
+                    <span class="stat">Purchase · Project · Inventory</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">🚧</span>
+                    <h3>P5: Construction &amp; Site Management</h3>
+                    <p>Break ground, manage progress per floor/zone with Gantt/Kanban in Odoo Project. Track material consumption (Inventory), log daily site reports, monitor contractor invoices against milestones, handle variation orders.</p>
+                    <span class="stat">Project · Inventory · Timesheet</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">📢</span>
+                    <h3>P6: Sales &amp; Marketing</h3>
+                    <p>Launch off-plan sales, manage broker/agent commissions, generate SPAs, track payment plans per unit. Odoo CRM for lead capture, Sales for unit booking and installment schedules, and a unit inventory matrix for availability.</p>
+                    <span class="stat">CRM · Sales · Commissions</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">🔑</span>
+                    <h3>P7: Handover &amp; Snagging</h3>
+                    <p>Conduct pre-handover inspection (snagging), generate punch lists in Odoo Helpdesk/Project, track defect rectification, issue completion certificate, hand keys to buyer, trigger final payment milestone.</p>
+                    <span class="stat">Project · Helpdesk · Quality</span>
+                </div>
+                <div class="overview-card">
+                    <span class="card-icon">🏢</span>
+                    <h3>P8: Property &amp; Facility Management</h3>
+                    <p>Post-handover: manage service charges, maintenance requests, tenant/owner database, common-area upkeep. Odoo Helpdesk for tickets, Accounting for service charge invoicing, and recurring maintenance schedules.</p>
+                    <span class="stat">Helpdesk · Accounting · Maintenance</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SECTION: MASTER PHASE FLOW ====== -->
+        <div class="section" id="sec-master">
+            <h2 class="section-title">Phase-by-Phase Flow</h2>
+            <p class="section-subtitle">Click any phase to expand details — roles, Odoo actions, and practical steps</p>
+
+            <div class="master-flow">
+                <div class="flow-line"></div>
+
+                <!-- P1 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#c044ff;color:#c044ff;">1</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">🌍</span>
+                            <div>
+                                <div class="phase-title">Land Acquisition &amp; Due Diligence</div>
+                                <div class="phase-duration">⏱ 2–6 months</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Source land, verify ownership, conduct feasibility study, negotiate and execute purchase agreement with escrow deposit.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Market research — identify target location, zoning regulations, plot size requirements</li>
+                                    <li>Title deed verification at DLD / Municipality land registry</li>
+                                    <li>Soil testing &amp; topographic survey (coordinate with survey company)</li>
+                                    <li>Environmental impact assessment if required by authority</li>
+                                    <li>Financial feasibility: land cost vs. projected GDV (Gross Development Value)</li>
+                                    <li>Negotiate price, payment terms, and contingencies with seller</li>
+                                    <li>Execute Sale &amp; Purchase Agreement (SPA), deposit to escrow</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>CRM Pipeline:</strong> Create opportunity "Land – [Plot ID]", stage: Prospect → Due Diligence → Negotiation → Won</li>
+                                    <li><strong>CRM Activity:</strong> Schedule site visit, legal review, soil test deadlines</li>
+                                    <li><strong>Documents:</strong> Attach title deed, survey report, feasibility PDF to opportunity</li>
+                                    <li><strong>Purchase Order:</strong> Create PO for land purchase, link to vendor (seller)</li>
+                                    <li><strong>Accounting:</strong> Record escrow deposit journal entry (Debit: Escrow Asset, Credit: Bank)</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-pm">Project Director</span>
+                                <span class="role-tag role-legal">Legal Counsel</span>
+                                <span class="role-tag role-finance">CFO / Finance</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P2 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#9944cc;color:#9944cc;">2</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">📐</span>
+                            <div>
+                                <div class="phase-title">Design &amp; Regulatory Approvals</div>
+                                <div class="phase-duration">⏱ 4–12 months</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Appoint design consultants, develop architectural/MEP/structural drawings, obtain Municipality building permit and Civil Defense NOC.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>RFP for architect, MEP consultant, structural engineer — evaluate and appoint</li>
+                                    <li>Concept design → client review → schematic design → detailed design (DD)</li>
+                                    <li>Prepare authority submission package: architectural plans, structural calcs, MEP layouts</li>
+                                    <li>Submit to Municipality for building permit (Barsha for Dubai, ADM for Abu Dhabi)</li>
+                                    <li>Submit to Civil Defense for fire &amp; life safety NOC</li>
+                                    <li>DEWA/ADDC connection applications for electricity &amp; water</li>
+                                    <li>Obtain Affection Plan / Plot Plan from survey authority</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Project:</strong> Create project "Design – [Project Name]" with task stages: Concept → Schematic → DD → Submission → Approved</li>
+                                    <li><strong>Purchase:</strong> RFQ to 3+ consultants, compare in Purchase Tender, award PO</li>
+                                    <li><strong>Project Tasks:</strong> Each consultant deliverable = task with deadline, assigned to responsible PM</li>
+                                    <li><strong>Documents:</strong> Version-controlled drawing uploads linked to project tasks</li>
+                                    <li><strong>Chatter:</strong> All authority correspondence logged on task — no emails lost</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-pm">Project Manager</span>
+                                <span class="role-tag role-design">Design Manager</span>
+                                <span class="role-tag role-legal">Legal / Compliance</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P3 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#6644cc;color:#6644cc;">3</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">🏛️</span>
+                            <div>
+                                <div class="phase-title">RERA Registration &amp; Escrow Setup</div>
+                                <div class="phase-duration">⏱ 1–3 months</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Register project with RERA, open escrow/trust account, obtain off-plan sales permit, configure financial controls for buyer funds.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Prepare RERA application: project master plan, consultant appointments, financial projections</li>
+                                    <li>Open escrow account at approved bank with DLD as signatory</li>
+                                    <li>Register each unit on Oqood system (off-plan registration)</li>
+                                    <li>Define payment plan structure (e.g., 40/60, construction-linked, post-handover)</li>
+                                    <li>Set up service charge budget for post-completion</li>
+                                    <li>Appoint escrow auditor as required by RERA</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Accounting:</strong> Create Escrow Bank Journal, configure bank account with restricted access</li>
+                                    <li><strong>Accounting:</strong> Chart of accounts: Escrow Receivable, Escrow Liability, Revenue Recognition accounts</li>
+                                    <li><strong>Payment Terms:</strong> Create payment plan templates (e.g., 10% booking → 30% during construction → 60% handover)</li>
+                                    <li><strong>Documents:</strong> Store RERA certificate, escrow agreement, Oqood registration docs</li>
+                                    <li><strong>Automated Actions:</strong> Trigger reminder when RERA renewal is due</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-finance">CFO / Finance</span>
+                                <span class="role-tag role-legal">Legal Counsel</span>
+                                <span class="role-tag role-pm">Development Director</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P4 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#4488cc;color:#4488cc;">4</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">🏗️</span>
+                            <div>
+                                <div class="phase-title">Pre-Construction &amp; Tendering</div>
+                                <div class="phase-duration">⏱ 2–4 months</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Prepare BOQ, float tenders to contractors, evaluate bids, negotiate and award construction contract with payment milestones.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Quantity surveyor prepares Bill of Quantities (BOQ) from detailed design</li>
+                                    <li>Pre-qualify contractors: financial standing, past projects, safety record</li>
+                                    <li>Float tender package: drawings, specs, BOQ, contract terms (FIDIC-based)</li>
+                                    <li>Receive bids, prepare bid comparison matrix</li>
+                                    <li>Negotiate final price, retention %, defect liability period</li>
+                                    <li>Award Letter of Intent (LOI) → execute construction contract</li>
+                                    <li>Mobilization: site office setup, hoarding, safety plan</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Purchase Tender:</strong> Create Purchase Agreement type "Tender", attach BOQ, invite 5+ vendors</li>
+                                    <li><strong>Purchase:</strong> Each bid = Vendor RFQ line; use comparison report to shortlist</li>
+                                    <li><strong>Purchase Order:</strong> Winning contractor → PO with milestone-based payment schedule</li>
+                                    <li><strong>Contacts:</strong> Create contractor as vendor, store insurance certs, trade licenses</li>
+                                    <li><strong>Project:</strong> Create "Construction – [Project Name]" project, Gantt chart with phases</li>
+                                    <li><strong>Inventory:</strong> Set up warehouse/location for construction site material storage</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-pm">Project Manager</span>
+                                <span class="role-tag role-finance">Quantity Surveyor</span>
+                                <span class="role-tag role-constr">Contracts Manager</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P5 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#44cccc;color:#44cccc;">5</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">🚧</span>
+                            <div>
+                                <div class="phase-title">Construction &amp; Site Management</div>
+                                <div class="phase-duration">⏱ 12–36 months</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Execute construction per approved drawings. Manage progress, material procurement, contractor payments, quality inspections, and variation orders.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Enabling works: excavation, shoring, dewatering, piling</li>
+                                    <li>Substructure: foundation, basement slabs, waterproofing</li>
+                                    <li>Superstructure: floor-by-floor concrete frame, core walls</li>
+                                    <li>MEP rough-in: electrical conduits, plumbing risers, HVAC ducts</li>
+                                    <li>Façade / cladding installation</li>
+                                    <li>Internal finishing: flooring, painting, joinery, sanitary fittings</li>
+                                    <li>Monthly progress certification by consultant → contractor payment application</li>
+                                    <li>Variation Order (VO) management: scope change → cost impact → approval</li>
+                                    <li>HSE compliance: daily toolbox talks, incident reporting</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Project Tasks:</strong> Each construction milestone = task (e.g., "Level 5 Slab Pour") with % complete tracking</li>
+                                    <li><strong>Timesheet:</strong> Site engineers log daily hours against project tasks</li>
+                                    <li><strong>Inventory:</strong> Material requisition → PO → GRN at site warehouse. Track cement, steel, aggregate consumption</li>
+                                    <li><strong>Purchase:</strong> Contractor interim payment certificates → vendor bills matched against PO milestones</li>
+                                    <li><strong>Accounting:</strong> Retention holdback (typically 5-10%) recorded as liability until defect period ends</li>
+                                    <li><strong>Quality:</strong> Inspection checklists via custom Odoo quality points on material receipts</li>
+                                    <li><strong>Project Updates:</strong> Weekly progress photos and notes uploaded to task chatter</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-constr">Site Engineer</span>
+                                <span class="role-tag role-pm">Project Manager</span>
+                                <span class="role-tag role-finance">QS / Cost Control</span>
+                                <span class="role-tag role-design">Consultant Supervisor</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P6 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#44cc88;color:#44cc88;">6</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">📢</span>
+                            <div>
+                                <div class="phase-title">Sales &amp; Marketing (Off-Plan / Ready)</div>
+                                <div class="phase-duration">⏱ Throughout construction</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Launch sales, manage agents/brokers, process unit bookings, generate SPAs, track payment plan installments, manage cancellations.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Develop sales collateral: brochures, floor plans, price lists, 3D renders</li>
+                                    <li>Launch marketing campaign: digital ads, property portals (Bayut, Property Finder), exhibitions</li>
+                                    <li>Appoint external brokers with commission structure (typically 2-3% of unit price)</li>
+                                    <li>Unit reservation → Expression of Interest (EOI) with token amount</li>
+                                    <li>Generate SPA from template, buyer signs, register on Oqood</li>
+                                    <li>Payment plan tracking: booking → construction milestones → completion → post-handover</li>
+                                    <li>Handle cancellation/resale: forfeit deposit per RERA rules, release unit back to inventory</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>CRM:</strong> Leads from website/portals auto-created, assigned to sales team by round-robin</li>
+                                    <li><strong>CRM Pipeline:</strong> Lead → Qualified → Site Visit → EOI → SPA Signed → Won</li>
+                                    <li><strong>Products:</strong> Each unit = product variant (Type: 1BR/2BR/3BR, Floor, View, Size). Track availability status</li>
+                                    <li><strong>Sales Order:</strong> Unit booking = SO with payment plan (installment invoice schedule)</li>
+                                    <li><strong>Invoicing:</strong> Auto-generate installment invoices per payment plan dates</li>
+                                    <li><strong>Commission:</strong> Broker commission calculated on SO confirmation, paid on buyer's first installment</li>
+                                    <li><strong>Reports:</strong> Sales dashboard: units sold vs. available, revenue by unit type, aging receivables</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-sales">Sales Manager</span>
+                                <span class="role-tag role-mktg">Marketing</span>
+                                <span class="role-tag role-finance">Finance (Collections)</span>
+                                <span class="role-tag role-legal">Legal (SPA)</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P7 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#cc8844;color:#cc8844;">7</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">🔑</span>
+                            <div>
+                                <div class="phase-title">Handover &amp; Snagging</div>
+                                <div class="phase-duration">⏱ 2–6 months</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Complete construction, obtain completion certificate, conduct unit inspections (snagging), rectify defects, hand over keys to buyers.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Apply for Building Completion Certificate (BCC) from Municipality</li>
+                                    <li>Obtain final NOCs: Civil Defense, DEWA/ADDC, Etisalat/Du, drainage authority</li>
+                                    <li>Internal pre-handover inspection: developer QA team walks every unit</li>
+                                    <li>Generate snag list per unit: paint defects, tile chips, MEP faults, door alignment</li>
+                                    <li>Contractor rectifies snags within agreed timeframe</li>
+                                    <li>Buyer invited for inspection, buyer accepts or raises additional snags</li>
+                                    <li>Final payment collected, keys handed over, unit registered at DLD (Title Deed transfer)</li>
+                                    <li>Defect Liability Period (DLP) starts — typically 12 months</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Helpdesk:</strong> Each snag item = ticket, categorized (MEP/Finishing/Structural), assigned to contractor</li>
+                                    <li><strong>Helpdesk SLA:</strong> 7-day fix SLA for minor snags, 14-day for major — auto-escalation</li>
+                                    <li><strong>Project:</strong> "Handover – [Unit ID]" task with checklist: NOCs ✓, inspection ✓, snag clear ✓, keys ✓</li>
+                                    <li><strong>Sales Order:</strong> Mark SO as "Delivered" upon key handover</li>
+                                    <li><strong>Invoicing:</strong> Final installment invoice generated and sent to buyer</li>
+                                    <li><strong>Accounting:</strong> Release retention to contractor after DLP (scheduled action)</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-pm">Project Manager</span>
+                                <span class="role-tag role-constr">QA Inspector</span>
+                                <span class="role-tag role-sales">Customer Relations</span>
+                                <span class="role-tag role-finance">Finance</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+                <!-- P8 -->
+                <div class="phase-block">
+                    <div class="phase-number" style="background:#1a1040;border-color:#88cc44;color:#88cc44;">8</div>
+                    <div class="phase-card" onclick="this.classList.toggle('expanded')">
+                        <div class="phase-header">
+                            <span class="phase-icon">🏢</span>
+                            <div>
+                                <div class="phase-title">Property &amp; Facility Management</div>
+                                <div class="phase-duration">⏱ Ongoing post-handover</div>
+                            </div>
+                        </div>
+                        <div class="phase-summary">Manage owners association, service charges, maintenance requests, common area upkeep, tenant management, and asset lifecycle.</div>
+                        <div class="phase-details">
+                            <div class="detail-section">
+                                <h4>📋 Key Activities</h4>
+                                <ul class="detail-list">
+                                    <li>Establish Owners Association (OA), elect committee, register with RERA</li>
+                                    <li>Calculate annual service charge per unit (based on sq.ft and common area ratio)</li>
+                                    <li>Issue annual service charge invoices to all owners</li>
+                                    <li>Manage maintenance contracts: elevators, HVAC, fire systems, landscaping, cleaning</li>
+                                    <li>Handle maintenance requests from owners/tenants (emergency &amp; routine)</li>
+                                    <li>Common area management: lobby, gym, pool, parking, security</li>
+                                    <li>Manage lease contracts for rental units (if developer retains units)</li>
+                                    <li>Annual budget planning, actual vs. budget reporting to OA</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>⚙️ Odoo Actions</h4>
+                                <ul class="detail-list">
+                                    <li><strong>Contacts:</strong> Owner/tenant database with unit linkage, emergency contacts, payment history</li>
+                                    <li><strong>Accounting:</strong> Recurring invoices for annual service charges, automated payment reminders</li>
+                                    <li><strong>Helpdesk:</strong> Maintenance request portal — owner submits ticket, assigned to FM team</li>
+                                    <li><strong>Maintenance:</strong> Preventive maintenance calendar for elevators, fire systems, HVAC (recurring)</li>
+                                    <li><strong>Purchase:</strong> FM vendor contracts with auto-renewal reminders</li>
+                                    <li><strong>Rental:</strong> Lease management: contract start/end, rent collection, Ejari registration tracking</li>
+                                    <li><strong>Reports:</strong> Occupancy rates, outstanding service charges, maintenance cost per unit</li>
+                                </ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 Roles</h4>
+                                <span class="role-tag role-facility">Facility Manager</span>
+                                <span class="role-tag role-finance">Finance (FM)</span>
+                                <span class="role-tag role-constr">Maintenance Team</span>
+                                <span class="role-tag role-sales">Community Manager</span>
+                            </div>
+                        </div>
+                        <div class="expand-hint">▾ click to expand</div>
+                    </div>
+                </div>
+
+            </div><!-- /master-flow -->
+        </div>
+
+        <!-- ====== SECTION: ODOO MODULE MAP ====== -->
+        <div class="section" id="sec-odoo">
+            <h2 class="section-title">Odoo 17 Module Map — Real Estate Development</h2>
+            <p class="section-subtitle">How each Odoo module plugs into the real estate development lifecycle</p>
+
+            <div class="odoo-grid">
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">🎯</span>
+                        <h3>CRM</h3>
+                        <span class="mod-tag">SALES · P1 · P6</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Land pipeline:</strong> Track land opportunities from sourcing → due diligence → acquisition. Each plot = opportunity with expected GDV.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Unit sales pipeline:</strong> Buyer leads from website forms, Property Finder, Bayut integration → auto-assign to sales agents.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Activities:</strong> Schedule site visits, follow-up calls, SPA signing appointments. Automated email sequences for lead nurturing.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Reporting:</strong> Conversion rates by source, agent performance, average days-to-close, revenue forecast.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">💰</span>
+                        <h3>Sales &amp; Invoicing</h3>
+                        <span class="mod-tag">REVENUE · P6 · P7</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Unit as product:</strong> Product template "Residential Unit" with variants: 1BR, 2BR, 3BR, Penthouse. Attributes: floor, view, size (sqft), price.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Payment plans:</strong> Custom payment terms per unit sale (e.g., 10/30/60 split). Installment invoices auto-generated on schedule dates.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Broker commissions:</strong> Commission product on SO, computed as % of unit price. Vendor bill auto-created for broker on first payment receipt.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Unit availability:</strong> Custom field on product: Available / Reserved / Sold / Handed Over. Dashboard with availability matrix by floor.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">📊</span>
+                        <h3>Project Management</h3>
+                        <span class="mod-tag">EXECUTION · P2-P5 · P7</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Project hierarchy:</strong> Master project → sub-projects (Design, Construction, Handover). Each with Kanban stages + Gantt view.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Construction milestones:</strong> Tasks per floor/zone: excavation, foundation, slab, walls, MEP, finishing. % complete tracking.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Task dependencies:</strong> "MEP rough-in" cannot start until "Slab pour" is 100%. Gantt chart shows critical path.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Timesheets:</strong> Site engineers log hours per task. Cost analysis: planned hours vs. actual by phase.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Approvals:</strong> Variation orders submitted as tasks, routed to PM → QS → Director for approval before PO amendment.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">🛒</span>
+                        <h3>Purchase</h3>
+                        <span class="mod-tag">PROCUREMENT · P2 · P4 · P5</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Consultant RFQs:</strong> Send RFQ to architects/engineers, compare bids in Purchase Agreements (blanket orders). Award and track deliverables.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Contractor tendering:</strong> Purchase Tender for main contractor: attach BOQ, collect bids, automated comparison matrix.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Material procurement:</strong> Site material requests → PO → 3-way matching (PO ↔ GRN ↔ Invoice). Approval rules by amount threshold.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Milestone payments:</strong> PO with delivery orders per milestone. Vendor bill matched to certified % complete.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">📦</span>
+                        <h3>Inventory &amp; Warehouse</h3>
+                        <span class="mod-tag">MATERIALS · P5</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Site warehouse:</strong> Dedicated warehouse per project site. Locations: Main Store, Zone A, Zone B. Track material in/out.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Material tracking:</strong> Lot/serial tracking for critical items (steel batches for traceability, tile batches for color matching).</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Reorder rules:</strong> Min/max stock for cement, aggregate, rebar — auto-generate PO when below threshold.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Quality checks:</strong> Incoming inspection for steel (mill certificate), concrete (cube test results). Reject → return to vendor.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">🧮</span>
+                        <h3>Accounting &amp; Finance</h3>
+                        <span class="mod-tag">FINANCE · ALL PHASES</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Escrow accounting:</strong> Separate journal for escrow bank account. Buyer payments credit escrow liability; drawdowns debit on RERA approval.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Revenue recognition:</strong> IFRS 15 — recognize revenue at point of transfer (handover) or over time (% completion method).</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Retention accounting:</strong> 5-10% of contractor invoices held as retention liability. Released after 12-month DLP (scheduled journal entry).</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Multi-currency:</strong> Handle AED + USD transactions for imported materials. Automatic exchange rate updates.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Budgets:</strong> Project budgets in analytic accounting. Real-time budget vs. actual reports by cost center.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">🎧</span>
+                        <h3>Helpdesk</h3>
+                        <span class="mod-tag">AFTER-SALES · P7 · P8</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Snagging tickets:</strong> Each defect = ticket with photo attachment, category (Plumbing/Electrical/Finishing), severity, assigned contractor.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>SLA policies:</strong> Minor defect: 7 days. Major: 14 days. Critical (water leak): 24 hours. Auto-escalation to PM on breach.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Maintenance portal:</strong> Owners/tenants submit maintenance requests online. Auto-assign to facility management team.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Knowledge base:</strong> FAQ articles for common queries: parking rules, gym timings, move-in procedures, NOC for renovations.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">🔧</span>
+                        <h3>Maintenance</h3>
+                        <span class="mod-tag">FACILITIES · P8</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Equipment registry:</strong> All building assets: 4 elevators, 2 generators, fire pump, AHUs. Each with serial #, warranty, vendor.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Preventive maintenance:</strong> Recurring calendar: elevator servicing (monthly), fire alarm testing (quarterly), generator load test (bi-annual).</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Corrective maintenance:</strong> Breakdown request → diagnose → spare part PO → fix → close. Cost tracked per equipment.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>MTBF/MTTR tracking:</strong> Mean time between failures and mean time to repair — identify equipment needing replacement.</div></div>
+                    </div>
+                </div>
+
+                <div class="odoo-card">
+                    <div class="odoo-card-header">
+                        <span class="mod-icon">👥</span>
+                        <h3>HR &amp; Payroll</h3>
+                        <span class="mod-tag">PEOPLE · ALL PHASES</span>
+                    </div>
+                    <div class="odoo-card-body">
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Departments:</strong> Development, Construction, Sales &amp; Marketing, Finance, Legal, Facility Management. Org chart linked to projects.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Recruitment:</strong> Hire site engineers, sales agents, FM technicians. Pipeline: Application → Interview → Offer → Onboarded.</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Attendance &amp; leaves:</strong> Biometric integration for site workers. Leave management for office staff (WPS compliance).</div></div>
+                        <div class="odoo-feature"><div class="feat-dot"></div><div class="feat-text"><strong>Payroll:</strong> WPS-compliant salary processing. Gratuity calculation per UAE labor law. Cost allocation to projects via analytic.</div></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====== SECTION: SWIMLANE ====== -->
+        <div class="section" id="sec-swimlane">
+            <h2 class="section-title">Swimlane View — Who Does What</h2>
+            <p class="section-subtitle">Scroll horizontally to see all phases. Each row = a department/role.</p>
+
+            <div class="swimlane-container">
+                <div class="swimlane-grid">
+                    <!-- Headers -->
+                    <div class="swim-header swim-header-corner">DEPARTMENT</div>
+                    <div class="swim-header">P1: Land Acquisition</div>
+                    <div class="swim-header">P2: Design</div>
+                    <div class="swim-header">P3: RERA &amp; Escrow</div>
+                    <div class="swim-header">P4: Tendering</div>
+                    <div class="swim-header">P5: Construction</div>
+                    <div class="swim-header">P6: Sales</div>
+                    <div class="swim-header">P7: Handover</div>
+                    <div class="swim-header">P8: Facility Mgmt</div>
+
+                    <!-- Row: Development / PM -->
+                    <div class="swim-role-header">🔵 Development / PM</div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Land sourcing</div><div class="task-tool">CRM Pipeline</div></div>
+                        <div class="swim-task"><div class="task-name">Feasibility study</div><div class="task-tool">Spreadsheet → Odoo</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Appoint consultants</div><div class="task-tool">Purchase RFQ</div></div>
+                        <div class="swim-task"><div class="task-name">Design review</div><div class="task-tool">Project Tasks</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">RERA submission</div><div class="task-tool">Documents</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Tender evaluation</div><div class="task-tool">Purchase Tender</div></div>
+                        <div class="swim-task"><div class="task-name">Contract award</div><div class="task-tool">Purchase Order</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Progress monitoring</div><div class="task-tool">Project Gantt</div></div>
+                        <div class="swim-task"><div class="task-name">VO approvals</div><div class="task-tool">Project Tasks</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">BCC application</div><div class="task-tool">Documents</div></div>
+                        <div class="swim-task"><div class="task-name">Handover coordination</div><div class="task-tool">Project Tasks</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+
+                    <!-- Row: Sales & Marketing -->
+                    <div class="swim-role-header">🟢 Sales &amp; Marketing</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Lead capture</div><div class="task-tool">CRM</div></div>
+                        <div class="swim-task"><div class="task-name">Unit booking</div><div class="task-tool">Sales Order</div></div>
+                        <div class="swim-task"><div class="task-name">SPA generation</div><div class="task-tool">Report Template</div></div>
+                        <div class="swim-task"><div class="task-name">Broker management</div><div class="task-tool">Commission Module</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Customer relations</div><div class="task-tool">CRM Activities</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+
+                    <!-- Row: Finance -->
+                    <div class="swim-role-header">🟡 Finance</div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Land payment</div><div class="task-tool">Accounting</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Consultant payments</div><div class="task-tool">Vendor Bills</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Escrow setup</div><div class="task-tool">Bank Journal</div></div>
+                        <div class="swim-task"><div class="task-name">Payment plan config</div><div class="task-tool">Payment Terms</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Contract budgets</div><div class="task-tool">Analytic Accounts</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Contractor IPC</div><div class="task-tool">Vendor Bills</div></div>
+                        <div class="swim-task"><div class="task-name">Retention tracking</div><div class="task-tool">Accounting</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Installment collection</div><div class="task-tool">Customer Invoices</div></div>
+                        <div class="swim-task"><div class="task-name">Revenue recognition</div><div class="task-tool">Journal Entries</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Final settlement</div><div class="task-tool">Invoicing</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Service charge billing</div><div class="task-tool">Recurring Invoices</div></div>
+                    </div>
+
+                    <!-- Row: Legal -->
+                    <div class="swim-role-header">🔴 Legal &amp; Compliance</div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Title deed check</div><div class="task-tool">Documents</div></div>
+                        <div class="swim-task"><div class="task-name">SPA drafting</div><div class="task-tool">Report Template</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Permit applications</div><div class="task-tool">Project Tasks</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">RERA compliance</div><div class="task-tool">Documents</div></div>
+                        <div class="swim-task"><div class="task-name">Oqood registration</div><div class="task-tool">External Portal</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Contract review</div><div class="task-tool">Documents</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">SPA execution</div><div class="task-tool">eSign / Documents</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Title deed transfer</div><div class="task-tool">DLD Portal</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">OA registration</div><div class="task-tool">Documents</div></div>
+                    </div>
+
+                    <!-- Row: Construction -->
+                    <div class="swim-role-header">🟠 Construction Team</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Mobilization plan</div><div class="task-tool">Project Tasks</div></div>
+                    </div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Daily site reports</div><div class="task-tool">Timesheet</div></div>
+                        <div class="swim-task"><div class="task-name">Material requests</div><div class="task-tool">Inventory</div></div>
+                        <div class="swim-task"><div class="task-name">Quality inspections</div><div class="task-tool">Quality Module</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Snag rectification</div><div class="task-tool">Helpdesk Tickets</div></div>
+                    </div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+
+                    <!-- Row: Facility Management -->
+                    <div class="swim-role-header">🟣 Facility Management</div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell" style="background:#0a0e20;"></div>
+                    <div class="swim-cell">
+                        <div class="swim-task"><div class="task-name">Maintenance requests</div><div class="task-tool">Helpdesk</div></div>
+                        <div class="swim-task"><div class="task-name">Preventive schedules</div><div class="task-tool">Maintenance</div></div>
+                        <div class="swim-task"><div class="task-name">Vendor contracts</div><div class="task-tool">Purchase</div></div>
+                        <div class="swim-task"><div class="task-name">Community management</div><div class="task-tool">CRM / Portal</div></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SECTION: DOCUMENTS ====== -->
+        <div class="section" id="sec-documents">
+            <h2 class="section-title">Key Documents &amp; Outputs per Phase</h2>
+            <p class="section-subtitle">Critical documents produced and managed throughout the development lifecycle</p>
+
+            <div class="doc-table-wrap">
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Document</th>
+                            <th>Purpose</th>
+                            <th>Odoo Storage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><span class="phase-badge">P1</span></td><td>Title Deed / Mulkiya</td><td>Proof of land ownership — verified at DLD</td><td>Documents → CRM Opportunity</td></tr>
+                        <tr><td><span class="phase-badge">P1</span></td><td>Feasibility Report</td><td>Financial viability: land cost, development cost, projected GDV, IRR</td><td>Documents → CRM Opportunity</td></tr>
+                        <tr><td><span class="phase-badge">P1</span></td><td>Soil &amp; Survey Report</td><td>Geotechnical data for foundation design, topographic levels</td><td>Documents → Project</td></tr>
+                        <tr><td><span class="phase-badge">P2</span></td><td>Architectural Drawings</td><td>Floor plans, elevations, sections — authority submission</td><td>Documents → Project Tasks</td></tr>
+                        <tr><td><span class="phase-badge">P2</span></td><td>Building Permit</td><td>Municipality approval to commence construction</td><td>Documents → Project</td></tr>
+                        <tr><td><span class="phase-badge">P2</span></td><td>Civil Defense NOC</td><td>Fire &amp; life safety clearance</td><td>Documents → Project Tasks</td></tr>
+                        <tr><td><span class="phase-badge">P3</span></td><td>RERA Certificate</td><td>Off-plan sales license from Real Estate Regulatory Agency</td><td>Documents → Company</td></tr>
+                        <tr><td><span class="phase-badge">P3</span></td><td>Escrow Agreement</td><td>Trust account terms between developer, bank, and DLD</td><td>Documents → Accounting</td></tr>
+                        <tr><td><span class="phase-badge">P4</span></td><td>Bill of Quantities (BOQ)</td><td>Detailed cost breakdown for tendering</td><td>Attachments → Purchase Tender</td></tr>
+                        <tr><td><span class="phase-badge">P4</span></td><td>Construction Contract</td><td>FIDIC-based agreement with main contractor</td><td>Documents → Vendor Contact</td></tr>
+                        <tr><td><span class="phase-badge">P5</span></td><td>Interim Payment Certificate</td><td>Monthly contractor payment application certified by consultant</td><td>Vendor Bill → Purchase Order</td></tr>
+                        <tr><td><span class="phase-badge">P5</span></td><td>Variation Order</td><td>Scope change approval with cost impact</td><td>Project Task → PO Amendment</td></tr>
+                        <tr><td><span class="phase-badge">P5</span></td><td>Material Test Certificates</td><td>Steel mill certs, concrete cube tests, MEP compliance</td><td>Quality → Inventory Lots</td></tr>
+                        <tr><td><span class="phase-badge">P6</span></td><td>Sale &amp; Purchase Agreement</td><td>Buyer contract with payment plan and unit details</td><td>Report Template → Sales Order</td></tr>
+                        <tr><td><span class="phase-badge">P6</span></td><td>Oqood Registration</td><td>Off-plan unit registration with DLD</td><td>Documents → Sales Order</td></tr>
+                        <tr><td><span class="phase-badge">P7</span></td><td>Building Completion Certificate</td><td>Municipality confirmation that building meets approved plans</td><td>Documents → Project</td></tr>
+                        <tr><td><span class="phase-badge">P7</span></td><td>Snag List</td><td>Defect punch list per unit for contractor rectification</td><td>Helpdesk Tickets</td></tr>
+                        <tr><td><span class="phase-badge">P8</span></td><td>Service Charge Budget</td><td>Annual FM budget allocated per unit by sqft ratio</td><td>Accounting → Analytic</td></tr>
+                        <tr><td><span class="phase-badge">P8</span></td><td>Maintenance Contract</td><td>AMC for elevators, HVAC, fire systems, cleaning</td><td>Purchase → Recurring PO</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ====== SECTION: KPIs ====== -->
+        <div class="section" id="sec-kpi">
+            <h2 class="section-title">Key Performance Indicators</h2>
+            <p class="section-subtitle">Critical metrics tracked across Odoo dashboards for real estate development</p>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value">≤ 15%</div>
+                    <div class="kpi-label">Cost Overrun Tolerance</div>
+                    <div class="kpi-source">Project Budget vs. Actual (Analytic Accounting)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≥ 85%</div>
+                    <div class="kpi-label">Pre-Sales Before Completion</div>
+                    <div class="kpi-source">Sales Dashboard: Units Sold / Total Units</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≤ 30 days</div>
+                    <div class="kpi-label">Avg. DLD to Collection</div>
+                    <div class="kpi-source">Invoicing: Days Sales Outstanding (DSO)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≥ 20%</div>
+                    <div class="kpi-label">Target IRR</div>
+                    <div class="kpi-source">Financial Reports: Internal Rate of Return</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≤ 7 days</div>
+                    <div class="kpi-label">Snag Resolution Time</div>
+                    <div class="kpi-source">Helpdesk SLA: Avg. Close Time</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≥ 95%</div>
+                    <div class="kpi-label">Collection Rate</div>
+                    <div class="kpi-source">Accounting: Collected vs. Invoiced %</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">100%</div>
+                    <div class="kpi-label">Authority Compliance</div>
+                    <div class="kpi-source">Project: All NOCs &amp; Permits — Active Status</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≤ 5%</div>
+                    <div class="kpi-label">Cancellation Rate</div>
+                    <div class="kpi-source">Sales: Cancelled SOs / Total Bookings</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≤ 2 hrs</div>
+                    <div class="kpi-label">Emergency Response</div>
+                    <div class="kpi-source">Helpdesk: Critical Ticket SLA</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≥ 98%</div>
+                    <div class="kpi-label">Preventive Maint. Compliance</div>
+                    <div class="kpi-source">Maintenance: Completed / Scheduled %</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≤ 3%</div>
+                    <div class="kpi-label">Variation Order %</div>
+                    <div class="kpi-source">Purchase: VO Value / Contract Value</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">≥ 90%</div>
+                    <div class="kpi-label">On-Time Milestone Delivery</div>
+                    <div class="kpi-source">Project: Tasks completed by deadline %</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <div class="footer">
+        <strong>Real Estate Development Workflow</strong> — Odoo 17 Integration Reference<br>
+        UAE Market · DLD · RERA · Municipality · DEWA · Civil Defense
+    </div>
+
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

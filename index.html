@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UAE Survey Company — Process Flow Hub</title>
+    <title>GeoEstate — Workflow Documentation Hub</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -12,78 +12,139 @@
             background: #0a0e27;
             color: #e0e0e0;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
         }
 
+        /* ===== TOP NAVIGATION ===== */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 30px;
+            background: #0d1230;
+            border-bottom: 1px solid #1a2055;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #00d4aa;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .top-nav .nav-link {
+            padding: 8px 18px;
+            border: 1px solid #2a3070;
+            border-radius: 25px;
+            background: transparent;
+            color: #7788aa;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .top-nav .nav-link:hover, .top-nav .nav-link.active {
+            background: linear-gradient(135deg, #00d4aa, #0088cc);
+            color: #fff;
+            border-color: #00d4aa;
+        }
+
+        /* ===== HEADER ===== */
         .header {
             text-align: center;
-            margin-bottom: 50px;
+            padding: 50px 20px 30px;
         }
-
         .header h1 {
             font-size: 2.2em;
             color: #00d4aa;
             margin-bottom: 12px;
         }
-
         .header p {
             color: #6677aa;
             font-size: 1em;
-            max-width: 600px;
+            max-width: 700px;
             line-height: 1.6;
+            margin: 0 auto;
         }
 
-        .cards {
+        /* ===== INDUSTRY SECTIONS ===== */
+        .industry-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 20px 40px;
+        }
+        .industry-label {
             display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 900px;
-            width: 100%;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1a2055;
+        }
+        .industry-label .ind-icon {
+            font-size: 1.5em;
+        }
+        .industry-label h2 {
+            font-size: 1.2em;
+            color: #fff;
+        }
+        .industry-label .ind-tag {
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 0.72em;
+            font-weight: 700;
+            background: rgba(0,212,170,0.12);
+            color: #00d4aa;
+            border: 1px solid #00d4aa44;
+        }
+
+        /* ===== CARDS GRID ===== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
         }
 
         .card {
-            flex: 1;
-            min-width: 300px;
-            max-width: 400px;
             background: linear-gradient(145deg, #131842, #1a2055);
             border: 1px solid #2a3070;
             border-radius: 20px;
-            padding: 35px 30px;
+            padding: 30px 26px;
             text-decoration: none;
             color: inherit;
             transition: all 0.35s ease;
             position: relative;
             overflow: hidden;
         }
-
         .card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #00d4aa, #0088cc);
             opacity: 0;
             transition: opacity 0.3s;
         }
+        .card.survey-card::before { background: linear-gradient(90deg, #00d4aa, #0088cc); }
+        .card.realestate-card::before { background: linear-gradient(90deg, #c044ff, #6644cc); }
 
         .card:hover {
             transform: translateY(-6px);
-            border-color: #00d4aa55;
-            box-shadow: 0 12px 40px rgba(0, 212, 170, 0.2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
+        .card.survey-card:hover { border-color: #00d4aa55; box-shadow: 0 12px 40px rgba(0,212,170,0.15); }
+        .card.realestate-card:hover { border-color: #c044ff55; box-shadow: 0 12px 40px rgba(192,68,255,0.15); }
 
         .card:hover::before { opacity: 1; }
 
-        .card-icon {
-            font-size: 3em;
-            margin-bottom: 18px;
-            display: block;
-        }
+        .card-icon { font-size: 2.5em; margin-bottom: 14px; display: block; }
 
         .card-badge {
             display: inline-block;
@@ -91,38 +152,35 @@
             border-radius: 12px;
             font-size: 0.72em;
             font-weight: 700;
-            margin-bottom: 14px;
-            background: rgba(0,212,170,0.12);
-            color: #00d4aa;
-            border: 1px solid #00d4aa44;
+            margin-bottom: 12px;
         }
+        .badge-survey { background: rgba(0,212,170,0.12); color: #00d4aa; border: 1px solid #00d4aa44; }
+        .badge-realestate { background: rgba(192,68,255,0.12); color: #c044ff; border: 1px solid #c044ff44; }
 
         .card h2 {
-            font-size: 1.25em;
+            font-size: 1.2em;
             color: #fff;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             line-height: 1.3;
         }
-
         .card p {
             color: #6677aa;
-            font-size: 0.88em;
+            font-size: 0.85em;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .tab-list {
             list-style: none;
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 24px;
+            gap: 5px;
+            margin-bottom: 20px;
         }
-
         .tab-list li {
-            padding: 4px 10px;
+            padding: 3px 9px;
             border-radius: 20px;
-            font-size: 0.72em;
+            font-size: 0.7em;
             background: #0d1230;
             border: 1px solid #2a3070;
             color: #8899bb;
@@ -130,93 +188,153 @@
 
         .open-btn {
             display: inline-block;
-            padding: 10px 24px;
-            background: linear-gradient(135deg, #00d4aa, #0088cc);
+            padding: 10px 22px;
             color: #fff;
             border-radius: 25px;
-            font-size: 0.88em;
+            font-size: 0.85em;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s;
         }
+        .btn-survey { background: linear-gradient(135deg, #00d4aa, #0088cc); }
+        .btn-realestate { background: linear-gradient(135deg, #c044ff, #6644cc); }
 
         .card:hover .open-btn {
-            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            color: #2a3070;
-            font-size: 2em;
-            align-self: center;
-        }
-
+        /* ===== FOOTER ===== */
         .footer {
-            margin-top: 50px;
+            padding: 30px 20px;
             text-align: center;
             color: #2a3a5a;
             font-size: 0.82em;
+            border-top: 1px solid #1a2055;
         }
-
         .footer strong { color: #00d4aa; }
 
         @media (max-width: 680px) {
-            .divider { transform: rotate(90deg); }
             .header h1 { font-size: 1.5em; }
+            .top-nav { flex-direction: column; gap: 10px; }
+            .top-nav .nav-links { justify-content: center; }
         }
     </style>
 </head>
 <body>
 
+    <!-- TOP NAVIGATION -->
+    <nav class="top-nav">
+        <a class="brand" href="index.html">🏗️ GeoEstate Hub</a>
+        <div class="nav-links">
+            <a class="nav-link active" href="#survey">📏 Survey Company</a>
+            <a class="nav-link" href="#realestate">🏢 Real Estate Development</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
     <div class="header">
-        <h1>🏗️ UAE Survey Company</h1>
-        <p>Complete Process Flow & Reference Documentation<br>Select a document to open</p>
+        <h1>🏗️ GeoEstate Group</h1>
+        <p>Industry Workflow Documentation &amp; Odoo Integration Reference<br>Select an industry workflow to explore</p>
     </div>
 
-    <div class="cards">
+    <!-- ===== SURVEY COMPANY SECTION ===== -->
+    <div class="industry-section" id="survey">
+        <div class="industry-label">
+            <span class="ind-icon">📏</span>
+            <h2>Survey Company Workflows</h2>
+            <span class="ind-tag">SURVEY · GEOSPATIAL</span>
+        </div>
+        <div class="cards">
+            <a class="card survey-card" href="uae_survey_process_flow.html">
+                <span class="card-icon">📋</span>
+                <div class="card-badge badge-survey">Core Workflow — 10 Phases</div>
+                <h2>End-to-End Survey Process Flow</h2>
+                <p>Complete operational workflow from client inquiry through field survey, processing, authority approval, and final delivery.</p>
+                <ul class="tab-list">
+                    <li>📊 Overview</li>
+                    <li>🔄 Master Flow</li>
+                    <li>🏊 Swimlane View</li>
+                    <li>📋 Service Types</li>
+                    <li>📄 Documents</li>
+                </ul>
+                <span class="open-btn btn-survey">Open Workflow →</span>
+            </a>
 
-        <!-- Part 1 -->
-        <a class="card" href="uae_survey_process_flow.html" target="_blank">
-            <span class="card-icon">📋</span>
-            <div class="card-badge">PART 1 — Core Workflow</div>
-            <h2>End-to-End Process Flow</h2>
-            <p>The complete 10-phase operational workflow from client inquiry through authority approval and final delivery.</p>
-            <ul class="tab-list">
-                <li>📊 Overview</li>
-                <li>🔄 Master Flow</li>
-                <li>🏊 Swimlane View</li>
-                <li>📋 Service Types</li>
-                <li>📄 Documents & Outputs</li>
-            </ul>
-            <span class="open-btn">Open Part 1 →</span>
-        </a>
-
-        <div class="divider">⟷</div>
-
-        <!-- Part 2 -->
-        <a class="card" href="WORKFLOW%20SURVEY.html" target="_blank">
-            <span class="card-icon">📈</span>
-            <div class="card-badge">PART 2 — Extended Reference</div>
-            <h2>Extended Process Flows</h2>
-            <p>Deep-dive into the rectification loop, financial flow, equipment lifecycle, Odoo module mapping, KPIs, and day-in-life.</p>
-            <ul class="tab-list">
-                <li>🔁 Rectification Loop</li>
-                <li>💰 Financial Flow</li>
-                <li>🔧 Equipment Lifecycle</li>
-                <li>⚙️ Odoo Module Map</li>
-                <li>📊 KPI Dashboard</li>
-                <li>🕐 Day-in-Life</li>
-            </ul>
-            <span class="open-btn">Open Part 2 →</span>
-        </a>
-
+            <a class="card survey-card" href="WORKFLOW%20SURVEY.html">
+                <span class="card-icon">📈</span>
+                <div class="card-badge badge-survey">Extended Reference</div>
+                <h2>Extended Process Flows</h2>
+                <p>Deep-dive into rectification loop, financial flow, equipment lifecycle, Odoo module mapping, KPIs, and day-in-life scenarios.</p>
+                <ul class="tab-list">
+                    <li>🔁 Rectification Loop</li>
+                    <li>💰 Financial Flow</li>
+                    <li>🔧 Equipment Lifecycle</li>
+                    <li>⚙️ Odoo Module Map</li>
+                    <li>📊 KPI Dashboard</li>
+                </ul>
+                <span class="open-btn btn-survey">Open Extended →</span>
+            </a>
+        </div>
     </div>
 
+    <!-- ===== REAL ESTATE DEVELOPMENT SECTION ===== -->
+    <div class="industry-section" id="realestate">
+        <div class="industry-label">
+            <span class="ind-icon">🏢</span>
+            <h2>Real Estate Development Workflows</h2>
+            <span class="ind-tag" style="background:rgba(192,68,255,0.12);color:#c044ff;border-color:#c044ff44;">DEVELOPMENT · ODOO</span>
+        </div>
+        <div class="cards">
+            <a class="card realestate-card" href="real_estate_dev_workflow.html">
+                <span class="card-icon">🏗️</span>
+                <div class="card-badge badge-realestate">Full Lifecycle — 8 Phases</div>
+                <h2>Real Estate Development — End-to-End Workflow</h2>
+                <p>Land acquisition, design &amp; approvals, RERA registration, construction management, off-plan sales, handover, and facility management — all mapped to Odoo 17.</p>
+                <ul class="tab-list">
+                    <li>📊 Overview</li>
+                    <li>🔄 Phase Flow</li>
+                    <li>⚙️ Odoo Modules</li>
+                    <li>🏊 Swimlane</li>
+                    <li>📄 Documents</li>
+                    <li>📈 KPIs</li>
+                </ul>
+                <span class="open-btn btn-realestate">Open Workflow →</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
     <div class="footer">
-        <strong>UAE Survey Company</strong> — Workflow Documentation Suite<br>
-        GeoEstate Survey Services · Dubai · Abu Dhabi · RAK · Ajman · UAQ
+        <strong>GeoEstate Group</strong> — Workflow Documentation Suite<br>
+        Survey Services · Real Estate Development · Dubai · Abu Dhabi · RAK · Ajman · UAQ
     </div>
+
+    <script>
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+
+        // Highlight active nav on scroll
+        const sections = document.querySelectorAll('.industry-section');
+        const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(sec => {
+                if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+            });
+        });
+    </script>
 
 </body>
 </html>
